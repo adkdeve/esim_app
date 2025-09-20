@@ -96,7 +96,7 @@ class MainView extends GetView<MainController> {
               title: "Notifications",
               icon: 'assets/icons/ic_notification.svg',
               onTap: () {
-                // controller.closeDrawer();
+                controller.closeDrawer();
               },
                 trailing: Switch(
                   value: true,
@@ -110,8 +110,8 @@ class MainView extends GetView<MainController> {
               icon: 'assets/icons/ic_phone.svg',
               showArrow: true,
               onTap: () {
-                // controller.closeDrawer();
-                // Get.toNamed(Routes.CONTACT_US);
+                controller.closeDrawer();
+                Get.toNamed(Routes.CONTACT_US);
               },
             ),
             DrawerItem(
@@ -147,8 +147,8 @@ class MainView extends GetView<MainController> {
               icon: 'assets/icons/ic_privacy.svg',
               showArrow: true,
               onTap: () {
-                // controller.closeDrawer();
-                // Get.toNamed(Routes.PRIVACY_POLICY);
+                controller.closeDrawer();
+                Get.toNamed(Routes.PRIVACY_POLICY);
               },
             ),
             DrawerItem(
@@ -156,8 +156,8 @@ class MainView extends GetView<MainController> {
               icon: 'assets/icons/ic_terms.svg',
               showArrow: true,
               onTap: () {
-                // controller.closeDrawer();
-                // Get.toNamed(Routes.TERMS_AND_CONDITION);
+                controller.closeDrawer();
+                Get.toNamed(Routes.TERMS_AND_CONDITION);
               },
             ),
             DrawerItem(
@@ -165,8 +165,8 @@ class MainView extends GetView<MainController> {
               icon: 'assets/icons/ic_faqs.svg',
               showArrow: true,
               onTap: () {
-                // controller.closeDrawer();
-                // Get.toNamed(Routes.FAQ);
+                controller.closeDrawer();
+                Get.toNamed(Routes.FAQ);
               },
             ),
             DrawerItem(
@@ -174,8 +174,8 @@ class MainView extends GetView<MainController> {
               icon: 'assets/icons/ic_change_password.svg',
               showArrow: true,
               onTap: () {
-                // controller.closeDrawer();
-                // Get.toNamed(Routes.CHANGE_PASSWORD);
+                controller.closeDrawer();
+                Get.toNamed(Routes.CHANGE_PASSWORD);
               },
             ),
             const Spacer(),
