@@ -3,8 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../app/core/core.dart';
 
-import '../../common/widgets/smooth_rectangle_border.dart';
-
 class MyTextFormField extends StatefulWidget {
   const MyTextFormField({
     super.key,
@@ -34,9 +32,10 @@ class MyTextFormField extends StatefulWidget {
 }
 
 class _MyTextFormFieldState extends State<MyTextFormField> {
-  final FocusNode _focusNode = FocusNode(); // FocusNode to track focus changes
-  bool _isFocused = false; // To track if the TextFormField is focused
+  final FocusNode _focusNode = FocusNode();
+  bool _isFocused = false;
   var _passwordVisible = false;
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +51,7 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
 
   @override
   void dispose() {
-    _focusNode.dispose(); // Dispose of the FocusNode when done
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -62,12 +61,18 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
 
     return Container(
       padding: const EdgeInsets.all(2),
-      decoration: ShapeDecoration(
-        shape: SmoothRectangleBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          side: BorderSide(color: _isFocused ? R.theme.borderFocused : R.theme.borderUnfocused)
-        ),
+      decoration: BoxDecoration(
+        color: R.theme.secondary,
+        borderRadius: 15.radius,
+        boxShadow: [
+          BoxShadow(
+            color: R.theme.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
+
       child: TextFormField(
         onChanged: widget.onChange,
         focusNode: _focusNode,
@@ -92,9 +97,24 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
           ),
           hintText: widget.hinttxt,
           hintStyle: GoogleFonts.inter().copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 0.3,
+            color: R.theme.textSecondary,
+          ),
+          labelStyle: TextStyle(color: R.theme.transparent),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color:  R.theme.transparent),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color:  R.theme.transparent, width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color:  R.theme.error),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color:  R.theme.error, width: 2),
+            borderRadius: BorderRadius.circular(8),
           ),
           suffixIcon: widget.obscureTxt
               ? IconButton(

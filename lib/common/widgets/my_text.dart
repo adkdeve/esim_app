@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../app/core/core.dart';
 
 class MyText extends StatelessWidget {
   const MyText(
@@ -15,12 +14,14 @@ class MyText extends StatelessWidget {
         this.maxLines,
         this.overflow,
         this.decoration,
+        this.softWrap=false,
         this.opacity = 1.0});
 
   final String text;
   final double? fontSize;
   final double? height;
   final int? maxLines;
+  final bool softWrap;
   final FontWeight? fontWeight;
   final Color? color;
   final TextAlign? textAlign;
@@ -41,6 +42,7 @@ class MyText extends StatelessWidget {
       textAlign: textAlign,
       overflow: overflow ?? TextOverflow.visible,
       maxLines: maxLines,
+      softWrap: softWrap,
       style: GoogleFonts.inter().copyWith(
         decoration: decoration,
         height: height,

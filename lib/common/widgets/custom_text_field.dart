@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:pcom_app/app/core/core.dart';
-
 import 'my_text.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
   final String hintText;
+  final Color borderClr;
   final TextEditingController controller;
   final bool obscureText;
 
-  const CustomTextField({
+  CustomTextField({
     super.key,
     required this.label,
     required this.hintText,
     required this.controller,
+    this.borderClr = Colors.grey,
     this.obscureText = false,
   });
 
@@ -33,17 +34,18 @@ class CustomTextField extends StatelessWidget {
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: Colors.grey.shade600),
             filled: true,
-            fillColor: Colors.grey.shade200,
+            fillColor: R.theme.transparent,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: 8.radius,
-              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: 8.radius,
+              borderSide: BorderSide(color: borderClr),
             ),
           ),
         ),
-        16.sbh,
       ],
     );
   }

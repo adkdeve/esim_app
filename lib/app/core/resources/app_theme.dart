@@ -11,8 +11,10 @@ class AppThemeData {
 
   AppThemeData._internal();
 
-  final Color primary = Color(0xff9e7e55);
-  final Color secondary = Color(0xFF000001);
+  final Color primary = Color(0xff996323);
+  final Color secondary = Color(0xff0b143a);
+  final Color backgroundClr = Color(0xff050915);
+  final Color navBackClr = Color(0xff060E27);
   final Color white = Colors.white;
   final Color black = Colors.black;
   final Color grey = Colors.grey;
@@ -32,8 +34,8 @@ class AppThemeData {
   final Color color500 = Color(0xff6B7280);
   final Color color600 = Color(0xff475569);
   final Color color900 = Color(0xff080A12);
-  final Color textColor = Color(0xff111827);
-  final Color textLightColor = Color(0xff64748B);
+  final Color textColor = Colors.white;
+  final Color textLightColor = Color(0xff606060);
   final Color disableBtnBck = Color(0xffECECEC);
   final Color disableBtntext = Color.fromRGBO(4, 12, 34, 0.40);
   final Color jobTags = Color.fromRGBO(246, 248, 250, 0.60);
@@ -41,7 +43,7 @@ class AppThemeData {
   final Color selectedStar = Color(0xffD0624C);
   final Color borderFocused = Color(0xffF87171);
   final Color borderUnfocused = Color(0xffCBD5E1);
-  final Color cursorColor = Color(0xff0C192B);
+  final Color cursorColor = Colors.white;
   final Color cursorColorDark = Colors.white;
 
   // Dark Theme Colors
@@ -52,7 +54,7 @@ class AppThemeData {
 
   // Text Colors
   final Color textPrimary = const Color(0xFF212121);
-  final Color textSecondary = const Color(0xFF757575);
+  final Color textSecondary = const Color(0xff606060);
   final Color textHint = const Color(0xFF9E9E9E);
   final Color textDisabled = const Color(0xFFBDBDBD);
 
@@ -75,8 +77,8 @@ class AppThemeData {
       ));
     } else {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: color200, // Status bar color for light theme
-        statusBarIconBrightness: Brightness.dark, // Dark icons for light theme
+        statusBarColor: secondary, // Status bar color for light theme
+        statusBarIconBrightness: Brightness.light, // Dark icons for light theme
       ));
     }
   }
@@ -87,7 +89,7 @@ class AppThemeData {
     final colorScheme = ColorScheme.light(
       primary: primary,
       secondary: secondary,
-      background: white,
+      background: backgroundClr,
       surface: white,
       onPrimary: grey,
       onSecondary: black,
@@ -102,14 +104,14 @@ class AppThemeData {
       scaffoldBackgroundColor: colorScheme.background,
 
       appBarTheme: base.appBarTheme.copyWith(
-        backgroundColor: primary,
-        foregroundColor: black,
+        backgroundColor: backgroundClr,
+        foregroundColor: white,
       ),
       bottomNavigationBarTheme: base.bottomNavigationBarTheme.copyWith(
         selectedItemColor: primary,
-        unselectedItemColor: secondary,
-        backgroundColor: black,
-        type: BottomNavigationBarType.fixed, // or shifting
+        unselectedItemColor: grey,
+        backgroundColor: navBackClr,
+        type: BottomNavigationBarType.fixed,
       ),
       textTheme: base.textTheme.copyWith(
         bodyLarge: base.textTheme.bodyLarge!.copyWith(color: colorScheme.onBackground),
@@ -123,23 +125,26 @@ class AppThemeData {
         color: colorScheme.onBackground,
       ),
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: colorScheme.primary),
-        ),
-
         hintStyle: GoogleFonts.inter().copyWith(
-          color: color400,
-        ),
-        // focusedBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(color: colorScheme.secondary),
-        // ),
-        // enabledBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(color: colorScheme.primary),
-        // ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colorScheme.error),
+          color: textSecondary,
         ),
         labelStyle: TextStyle(color: colorScheme.onSurface),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: textSecondary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.error),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.error, width: 2),
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
       floatingActionButtonTheme: base.floatingActionButtonTheme.copyWith(
         backgroundColor: colorScheme.primary,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pcom_app/app/core/core.dart';
-
 import '../../common/widgets/my_text.dart';
 import '../../common/widgets/smooth_rectangle_border.dart';
 
@@ -41,6 +40,7 @@ class PrimaryButton extends StatelessWidget {
   final bool outlined;
   final double width;
   final double borderRadius;
+
   @override
   Widget build(BuildContext context) {
     return Center(

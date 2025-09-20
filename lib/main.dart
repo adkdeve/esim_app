@@ -35,13 +35,16 @@ void main() async {
             fallbackLocale: AppConfig.defaultLocale,
             supportedLocales: MyAppTranslation.supportedLocales,
             localizationsDelegates: GlobalMaterialLocalizations.delegates,
+
             // Theme
             themeMode: AppConfig.appDefaultTheme,
             theme: R.theme.light,
             darkTheme: R.theme.dark,
+
             // End
             initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,
+
           );
         }),
   );
