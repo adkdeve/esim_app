@@ -225,12 +225,12 @@ class HomeView extends GetView<HomeController> {
                 final asset = controller.popular[i]['asset']!;
                 return GestureDetector(
                     onTap: () {
-                      // Get.to(
-                      //   GetBuilder<CardDetailsController>(
-                      //     init: CardDetailsController(),
-                      //     builder: (_) => CardDetailsView(countryName: name, imageUrl: asset),
-                      //   ),
-                      // );
+                      Get.to(
+                        GetBuilder<CardDetailsController>(
+                          init: CardDetailsController(),
+                          builder: (_) => CardDetailsView(countryName: name, imageUrl: asset),
+                        ),
+                      );
                     },
                     child: CircleItem(
                         name: name, imageUrl: asset, imageSize: 47, textSize: 12
@@ -260,76 +260,76 @@ class CountriesTabWidget extends StatelessWidget {
       childAspectRatio: 1.5,
       children: [
         CustomCard(countryName: 'Qatar', imageUrl: 'https://flagcdn.com/w320/qa.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Qatar', imageUrl: 'https://flagcdn.com/w320/qa.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Qatar', imageUrl: 'https://flagcdn.com/w320/qa.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'China', imageUrl: 'https://flagcdn.com/w320/cn.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'China', imageUrl: 'https://flagcdn.com/w320/cn.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'China', imageUrl: 'https://flagcdn.com/w320/cn.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Cuba', imageUrl: 'https://flagcdn.com/w320/cu.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Cuba', imageUrl: 'https://flagcdn.com/w320/cu.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Cuba', imageUrl: 'https://flagcdn.com/w320/cu.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Egypt', imageUrl: 'https://flagcdn.com/w320/eg.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Egypt', imageUrl: 'https://flagcdn.com/w320/eg.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Egypt', imageUrl: 'https://flagcdn.com/w320/eg.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Israel', imageUrl: 'https://flagcdn.com/w320/il.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Israel', imageUrl: 'https://flagcdn.com/w320/il.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Israel', imageUrl: 'https://flagcdn.com/w320/il.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'England', imageUrl: 'https://flagcdn.com/w320/gb.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'England', imageUrl: 'https://flagcdn.com/w320/gb.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'England', imageUrl: 'https://flagcdn.com/w320/gb.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Poland', imageUrl: 'https://flagcdn.com/w320/pl.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Poland', imageUrl: 'https://flagcdn.com/w320/pl.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Poland', imageUrl: 'https://flagcdn.com/w320/pl.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Switzerland', imageUrl: 'https://flagcdn.com/w320/ch.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Switzerland', imageUrl: 'https://flagcdn.com/w320/ch.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Switzerland', imageUrl: 'https://flagcdn.com/w320/ch.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'New Zealand', imageUrl: 'https://flagcdn.com/w320/nz.png', imageSize: 50, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'New Zealand', imageUrl: 'https://flagcdn.com/w320/nz.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'New Zealand', imageUrl: 'https://flagcdn.com/w320/nz.png'),
+            ),
+          );
         }),
       ],
     );
@@ -350,52 +350,52 @@ class RegionalPlanTabWidget extends StatelessWidget {
       childAspectRatio: 1.5,
       children: [
         CustomCard(countryName: 'Global', imageUrl: 'assets/images/ic_global.png', imageSize: 48, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Global', imageUrl: 'assets/images/ic_global.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Global', imageUrl: 'assets/images/ic_global.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Europe', imageUrl: 'assets/images/ic_europe.png', imageSize: 48, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Europe', imageUrl: 'assets/images/ic_europe.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Europe', imageUrl: 'assets/images/ic_europe.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Australia', imageUrl: 'assets/images/ic_australia.png', imageSize: 48, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Australia', imageUrl: 'assets/images/ic_australia.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Australia', imageUrl: 'assets/images/ic_australia.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Latin America', imageUrl: 'assets/images/ic_america.png', imageSize: 48, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Latin America', imageUrl: 'assets/images/ic_america.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Latin America', imageUrl: 'assets/images/ic_america.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Africa', imageUrl: 'assets/images/ic_africa.png', imageSize: 48, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Africa', imageUrl: 'assets/images/ic_africa.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Africa', imageUrl: 'assets/images/ic_africa.png'),
+            ),
+          );
         }),
         CustomCard(countryName: 'Asia', imageUrl: 'assets/images/ic_asia.png', imageSize: 48, textSize: 14, onTap: () {
-          // Get.to(
-          //   GetBuilder<CardDetailsController>(
-          //     init: CardDetailsController(),
-          //     builder: (_) => CardDetailsView(countryName: 'Asia', imageUrl: 'assets/images/ic_asia.png'),
-          //   ),
-          // );
+          Get.to(
+            GetBuilder<CardDetailsController>(
+              init: CardDetailsController(),
+              builder: (_) => CardDetailsView(countryName: 'Asia', imageUrl: 'assets/images/ic_asia.png'),
+            ),
+          );
         }),
 
       ],

@@ -88,8 +88,8 @@ class MainView extends GetView<MainController> {
               icon: 'assets/icons/ic_edit_profile.svg',
               showArrow: true,
               onTap: () {
-                // controller.closeDrawer();
-                // controller.selectedIndex.value = 3;
+                controller.closeDrawer();
+                controller.selectedIndex.value = 3;
               },
             ),
             DrawerItem(
@@ -138,8 +138,8 @@ class MainView extends GetView<MainController> {
               icon: 'assets/icons/ic_data_usage.svg',
               showArrow: true,
               onTap: () {
-                // controller.closeDrawer();
-                // Get.toNamed(Routes.DATA_USAGE);
+                controller.closeDrawer();
+                Get.toNamed(Routes.DATA_USAGE);
               },
             ),
             DrawerItem(
@@ -184,28 +184,36 @@ class MainView extends GetView<MainController> {
       ),
       body: Obx(() => controller.screens[controller.selectedIndex.value]),
       bottomNavigationBar: Obx(
-          () => Padding(
+        () => Padding(
           padding: const EdgeInsets.only(bottom: 10.0),
           child: BottomNavigationBar(
             currentIndex: controller.selectedIndex.value,
             onTap: (index) {
-              // controller.selectedIndex.value = index;
+              controller.selectedIndex.value = index;
             },
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: SvgPicture.asset("assets/icons/ic_shop.svg"),
+                icon: controller.selectedIndex.value == 0
+                    ? Image.asset("assets/icons/ic_shop_active.png")
+                    : Image.asset("assets/icons/ic_shop.png"),
                 label: 'Shop',
               ),
               BottomNavigationBarItem(
-                icon: SvgPicture.asset("assets/icons/ic_esim.svg"),
+                icon: controller.selectedIndex.value == 1
+                    ? Image.asset("assets/icons/ic_esim_active.png")
+                    : Image.asset("assets/icons/ic_esim.png"),
                 label: 'My eSIMs',
               ),
               BottomNavigationBarItem(
-                icon: SvgPicture.asset("assets/icons/ic_guide.svg"),
+                icon: controller.selectedIndex.value == 2
+                    ? Image.asset("assets/icons/ic_guide_active.png")
+                    : Image.asset("assets/icons/ic_guide.png"),
                 label: 'Guides',
               ),
               BottomNavigationBarItem(
-                icon: SvgPicture.asset("assets/icons/ic_profile.svg"),
+                icon: controller.selectedIndex.value == 3
+                    ? Image.asset("assets/icons/ic_profile_active.png")
+                    : Image.asset("assets/icons/ic_profile.png"),
                 label: 'Profile',
               ),
             ],
