@@ -67,7 +67,7 @@ class AuthController extends GetxController {
         if (response['success'] == true) {
           switch (url) {
             case ApisUrl.login:
-              await authService.saveUserData(response, '');
+              await authService.saveUserData(data['password'],response, '');
               Get.offAllNamed(Routes.MAIN);
               break;
 

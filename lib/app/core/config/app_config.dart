@@ -30,6 +30,9 @@ class AppConfig {
   // ───── Third-Party Keys ─────
   static const String stripePublicKey = 'pk_test_1234567890';
   static const String firebaseSenderId = 'YOUR_FIREBASE_SENDER_ID';
+  static const String maya_api_username = "UEw6L0izT14n";
+  static const String maya_api_password = "IqH5NV6G9DTj7pL5moCfCsPqWX2hBYmMiUQrgpTzRt41iDYrSga8xEEucnk2Ken9";
+
 
   /// Default Locale
   static const Locale defaultLocale = Locale('en', 'US');

@@ -7,14 +7,16 @@ import '../../core/core.dart';
 
 class AuthService {
   static final String _userKey = MyConstants.userData;
+  static final String _passwordKey = MyConstants.passwordKey;
   static final String _tokenKey = MyConstants.token;
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   /// Save user info and token securely
-  Future<void> saveUserData(Map<String, dynamic> user, String token) async {
+  Future<void> saveUserData(String password,Map<String, dynamic> user, String token) async {
     final userJson = jsonEncode(user);
     await _storage.write(key: _userKey, value: userJson);
+    await _storage.write(key: _passwordKey, value: password);
     await _storage.write(key: _tokenKey, value: token);
   }
 
@@ -31,6 +33,11 @@ class AuthService {
   /// Get auth token
   Future<String?> getToken() async {
     return await _storage.read(key: _tokenKey);
+  }
+
+  /// Get auth token
+  Future<String?> getPassword() async {
+    return await _storage.read(key: _passwordKey);
   }
 
   /// Check if user is logged in

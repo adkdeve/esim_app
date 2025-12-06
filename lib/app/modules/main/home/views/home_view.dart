@@ -7,7 +7,6 @@ import '../../../../../common/widgets/custom_country_card.dart';
 import '../../../../../common/widgets/my_text.dart';
 import '../../../../core/core.dart';
 import '../../card_details/bindings/card_details_binding.dart';
-import '../../card_details/controllers/card_details_controller.dart';
 import '../../card_details/views/card_details_view.dart';
 import '../../controllers/main_controller.dart';
 import '../controllers/home_controller.dart';
@@ -160,14 +159,14 @@ class HomeView extends GetView<HomeController> {
 
                   10.sbh,
 
-                  GestureDetector(
-                    onTap: () {
-                    },
+                  CompositedTransformTarget(
+                    link: controller.layerLink, // 1. Links the floating list to this widget
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      height: 48,
                       decoration: BoxDecoration(
-                        color: R.theme.secondary,
-                        borderRadius: 15.radius,
+                        color: R.theme.secondary, // Dark background
+                        borderRadius: BorderRadius.circular(15), // ✅ Rounded corners (15px)
+                        // ✅ No 'border:' property here ensures no border color
                         boxShadow: [
                           BoxShadow(
                             color: R.theme.black.withOpacity(0.1),
@@ -176,26 +175,81 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ],
                       ),
-                      child: Row(
-                        children: [
+                      child: TextField(
+                        controller: controller.searchController,
+                        focusNode: controller.searchFocusNode,
+                        onChanged: controller.onSearchQueryChanged,
+                        style: TextStyle(color: R.theme.white, fontSize: 14),
+                        cursorColor: R.theme.primary,
+                        decoration: InputDecoration(
+                          hintText: 'Search your destination',
+                          hintStyle: const TextStyle(color: Color(0xff7a7a7a), fontSize: 14),
+                          prefixIcon: const Icon(Icons.search, color: Color(0xff7a7a7a)),
 
-                          Icon(Icons.search,color: Color(0xff7a7a7a)),
+                          // ✅ This removes the internal underline/border of the TextField
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
 
-                          8.sbw,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12),
 
-                          MyText(
-                              text: 'Search your destination',
-                              fontSize: 14,
-                              color: Color(0xff7a7a7a)
+                          // Shows 'X' button only when user types or has results
+                          suffixIcon: Obx(() =>
+                          controller.searchResults.isNotEmpty || controller.searchController.text.isNotEmpty
+                              ? IconButton(
+                            icon: const Icon(Icons.close, color: Colors.grey, size: 18),
+                            onPressed: () {
+                              controller.searchController.clear();
+                              controller.onSearchQueryChanged('');
+                              controller.searchFocusNode.unfocus();
+                            },
+                          )
+                              : const SizedBox.shrink()
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                  )
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     showSearch(
+                  //       context: context,
+                  //       delegate: DestinationSearchDelegate(),
+                  //     );
+                  //   },
+                  //   child: Container(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  //     decoration: BoxDecoration(
+                  //       color: R.theme.secondary,
+                  //       borderRadius: 15.radius,
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //           color: R.theme.black.withOpacity(0.1),
+                  //           blurRadius: 10,
+                  //           offset: const Offset(0, 5),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     child: Row(
+                  //       children: [
+                  //
+                  //         Icon(Icons.search,color: Color(0xff7a7a7a)),
+                  //
+                  //         8.sbw,
+                  //
+                  //         MyText(
+                  //             text: 'Search your destination',
+                  //             fontSize: 14,
+                  //             color: Color(0xff7a7a7a)
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
-
           ],
         ),
         ),
@@ -282,16 +336,8 @@ class CountriesTabWidget extends GetView<HomeController> {
             imageSize: 35,
             textSize: 14,
             onTap: () {
-              Get.to(
-                    () => const CardDetailsView(),
-                binding: CardDetailsBinding(),
-                arguments: {
-                  'countryName': country.name,
-                  'imageUrl': country.image,
-                  'products': country,
-                },
-              );
-            },
+              controller.navigateToDetails(country);
+            }
           );
         },
       );
@@ -322,15 +368,7 @@ class RegionalPlanTabWidget extends GetView<HomeController> {
             imageSize: 35,
             textSize: 14,
             onTap: () {
-              Get.to(
-                    () => const CardDetailsView(),
-                binding: CardDetailsBinding(),
-                arguments: {
-                  'countryName': region.name,
-                  'imageUrl': region.image,
-                  'products': region,
-                },
-              );
+              controller.navigateToDetails(region);
             },
           );
         },

@@ -35,242 +35,285 @@ class CardDetailsView extends GetView<CardDetailsController> {
               allowDrawingOutsideViewBox: true,
             ),
           ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: 16.all,
-              child: Column(
-                children: [
+          Obx(() {
+            // CASE A: LOADING
+            if (controller.isLoading.value) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: R.theme.primary),
+                    16.sbh,
+                    MyText(text: "Fetching best plans...", fontSize: 14, color: R.theme.grey),
+                  ],
+                ),
+              );
+            }
 
-                  // --- Category (Validity Days) Selector ---
-                  Padding(
-                    padding: const EdgeInsets.only(left: AppConfig.defaultPadding),
-                    child: SizedBox(
-                      height: 35, // Increased height slightly to prevent clipping
-                      child: Obx(() {
-                        // This outer Obx listens to 'category' list changes (data loading)
-                        if (controller.category.isEmpty) return SizedBox();
+            // CASE B: ERROR
+            if (controller.errorMessage.isNotEmpty) {
+              return Center(
+                child: Padding(
+                  padding: 20.all,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+                      10.sbh,
+                      MyText(
+                        text: controller.errorMessage.value,
+                        textAlign: TextAlign.center,
+                        fontSize: 16,
+                      ),
+                      10.sbh,
+                      ElevatedButton(
+                          onPressed: () => controller.fetchPlans(controller.name),
+                          child: Text("Retry")
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
 
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: controller.category.length,
-                          itemBuilder: (c, i) {
+            // CASE C: DATA LOADED (The main UI)
+            return SingleChildScrollView(
+              child: Padding(
+                padding: 16.all,
+                child: Column(
+                  children: [
 
-                            // --- FIX START ---
-                            // Wrap the individual item in Obx.
-                            // Now, when selectedCategoryIndex changes, only the specific items update their color.
-                            return Obx(() {
-                              var isSelected = i == controller.selectedCategoryIndex.value;
+                    // --- Category (Validity Days) Selector ---
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppConfig.defaultPadding),
+                      child: SizedBox(
+                        height: 35, // Increased height slightly to prevent clipping
+                        child: Obx(() {
+                          // This outer Obx listens to 'category' list changes (data loading)
+                          if (controller.category.isEmpty) return SizedBox();
 
-                              return GestureDetector(
-                                onTap: () => controller.filterPlansByIndex(i),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
-                                  margin: const EdgeInsets.only(right: 8),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                                  decoration: ShapeDecoration(
-                                    color: isSelected ? R.theme.primary : R.theme.secondary,
-                                    shape: SmoothRectangleBorder(
-                                      smoothness: 1,
-                                      borderRadius: BorderRadius.circular(AppConfig.defaultPadding),
-                                      side: BorderSide(
-                                          width: 0.5,
-                                          color: isSelected ? Colors.transparent : R.theme.grey
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: controller.category.length,
+                            itemBuilder: (c, i) {
+
+                              // --- FIX START ---
+                              // Wrap the individual item in Obx.
+                              // Now, when selectedCategoryIndex changes, only the specific items update their color.
+                              return Obx(() {
+                                var isSelected = i == controller.selectedCategoryIndex.value;
+
+                                return GestureDetector(
+                                  onTap: () => controller.filterPlansByIndex(i),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    margin: const EdgeInsets.only(right: 8),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                    decoration: ShapeDecoration(
+                                      color: isSelected ? R.theme.primary : R.theme.secondary,
+                                      shape: SmoothRectangleBorder(
+                                        smoothness: 1,
+                                        borderRadius: BorderRadius.circular(AppConfig.defaultPadding),
+                                        side: BorderSide(
+                                            width: 0.5,
+                                            color: isSelected ? Colors.transparent : R.theme.grey
+                                        ),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: MyText(
+                                        text: controller.category[i],
+                                        fontSize: 12,
+                                        color: isSelected ? R.theme.white : R.theme.color600,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ),
-                                  child: Center(
-                                    child: MyText(
-                                      text: controller.category[i],
-                                      fontSize: 12,
-                                      color: isSelected ? R.theme.white : R.theme.color600,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
-                            // --- FIX END ---
+                                );
+                              });
+                              // --- FIX END ---
 
-                          },
-                        );
-                      }),
+                            },
+                          );
+                        }),
+                      ),
                     ),
-                  ),
 
-                  30.sbh,
+                    30.sbh,
 
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      text: 'Recommendation',
-                      fontSize: 18,
-                      textAlign: TextAlign.left,
-                      fontWeight: FontWeight.w700,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: MyText(
+                        text: 'Recommendation',
+                        fontSize: 18,
+                        textAlign: TextAlign.left,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
 
-                  4.sbh,
+                    4.sbh,
 
-                  // --- Recommendation / Info Card ---
-                  Container(
-                    width: double.infinity,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: R.theme.white,
-                      borderRadius: 20.radius,
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: ClipRRect(
-                            borderRadius: 20.radius,
-                            child: SvgPicture.asset(
-                              'assets/icons/ic_credit_card_background.svg',
-                              fit: BoxFit.cover,
+                    // --- Recommendation / Info Card ---
+                    Container(
+                      width: double.infinity,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: R.theme.white,
+                        borderRadius: 20.radius,
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: ClipRRect(
+                              borderRadius: 20.radius,
+                              child: SvgPicture.asset(
+                                'assets/icons/ic_credit_card_background.svg',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: 16.all,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: 50.radius,
-                                    child: buildImage(
-                                        controller.imageUrl,
-                                        width: 30,
-                                        height: 30,
-                                        fit: BoxFit.cover,
-                                        context: context
-                                    ),
-                                  ),
-                                  10.sbw,
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      MyText(
-                                        text: controller.countryName,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                      MyText(text: 'Standard eSIM', fontSize: 10, color: Colors.grey),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  buildImage('assets/images/ic_sim.png', width: 32, height: 26, context: context),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 40, top: 6),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child:  MyText(
-                                    color: R.theme.black,
-                                    text: controller.priceRange, // Dynamic Price Range
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              Spacer(),
-                              MyText(text: 'Plan Benefits:', fontSize: 10, fontWeight: FontWeight.bold, color: R.theme.black),
-                              8.sbh,
-                              Row(
-                                children: [
-                                  _buildBenefitItem(icon: 'assets/icons/ic_no_data.svg', text: 'Data only', context: context),
-                                  8.sbw,
-                                  _buildBenefitItem(icon: 'assets/icons/ic_speed.svg', text: 'Up to 5G', context: context),
-                                  8.sbw,
-                                  // Dynamic validity based on selection
-                                  Obx(() {
-                                    final plan = controller.recommendedPlan;
-                                    return _buildBenefitItem(
-                                        iconObj: Icons.calendar_month_outlined,
-                                        text: plan != null ? '${plan.validityDays} days' : '--',
-                                        context: context
-                                    );
-                                  }),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  20.sbh,
-
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Obx(() => MyText(
-                      text: '${controller.displayedPlans.length} Available Plans',
-                      fontSize: 18,
-                      textAlign: TextAlign.left,
-                      fontWeight: FontWeight.w700,
-                    )),
-                  ),
-
-                  20.sbh,
-
-                  // --- Plans List ---
-                  Obx(() {
-                    if (controller.displayedPlans.isEmpty) {
-                      return Center(child: MyText(text: "No plans found for this category", fontSize: null,));
-                    }
-                    return Column(
-                      children: List.generate(controller.displayedPlans.length, (index) {
-                        EsimProduct plan = controller.displayedPlans[index];
-                        return GestureDetector(
-                          onTap: () => controller.selectPlan(index),
-                          child: Container(
-                            color: Colors.transparent, // expand tap area
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                          Padding(
+                            padding: 16.all,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
-                                    MyText(
-                                      text: controller.formatData(plan.dataQuotaMb),
-                                      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+                                    ClipRRect(
+                                      borderRadius: 50.radius,
+                                      child: buildImage(
+                                          controller.imageUrl,
+                                          width: 30,
+                                          height: 30,
+                                          fit: BoxFit.cover,
+                                          context: context
+                                      ),
                                     ),
                                     10.sbw,
-                                    MyText(
-                                      text: '${plan.validityDays} Days',
-                                      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        MyText(
+                                          text: controller.name,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                        MyText(text: 'Standard eSIM', fontSize: 10, color: Colors.grey),
+                                      ],
                                     ),
                                     Spacer(),
-                                    MyText(
-                                      text: '\$${plan.retailPrice.toStringAsFixed(2)}',
-                                      fontSize: 16, fontWeight: FontWeight.w500, color: R.theme.primary,
-                                    ),
-                                    10.sbw,
-                                    Obx(() => Radio<int>(
-                                      value: index,
-                                      groupValue: controller.selectedPlanIndex.value,
-                                      onChanged: (int? value) => controller.selectPlan(value!),
-                                      activeColor: R.theme.white,
-                                      fillColor: MaterialStateProperty.all(R.theme.white),
-                                    )),
+                                    buildImage('assets/images/ic_sim.png', width: 32, height: 26, context: context),
                                   ],
                                 ),
-                                Divider(color: R.theme.grey.withOpacity(0.5)),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 40, top: 6),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child:  MyText(
+                                      color: R.theme.black,
+                                      text: controller.priceRange, // Dynamic Price Range
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                MyText(text: 'Plan Benefits:', fontSize: 10, fontWeight: FontWeight.bold, color: R.theme.black),
+                                8.sbh,
+                                Row(
+                                  children: [
+                                    _buildBenefitItem(icon: 'assets/icons/ic_no_data.svg', text: 'Data only', context: context),
+                                    8.sbw,
+                                    _buildBenefitItem(icon: 'assets/icons/ic_speed.svg', text: 'Up to 5G', context: context),
+                                    8.sbw,
+                                    // Dynamic validity based on selection
+                                    Obx(() {
+                                      final plan = controller.recommendedPlan;
+                                      return _buildBenefitItem(
+                                          iconObj: Icons.calendar_month_outlined,
+                                          text: plan != null ? '${plan.validityDays} days' : '--',
+                                          context: context
+                                      );
+                                    }),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
-                        );
-                      }),
-                    );
-                  }),
-                ],
+                        ],
+                      ),
+                    ),
+
+                    20.sbh,
+
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Obx(() => MyText(
+                        text: '${controller.displayedPlans.length} Available Plans',
+                        fontSize: 18,
+                        textAlign: TextAlign.left,
+                        fontWeight: FontWeight.w700,
+                      )),
+                    ),
+
+                    20.sbh,
+
+                    // --- Plans List ---
+                    Obx(() {
+                      if (controller.displayedPlans.isEmpty) {
+                        return Center(child: MyText(text: "No plans found for this category", fontSize: null,));
+                      }
+                      return Column(
+                        children: List.generate(controller.displayedPlans.length, (index) {
+                          EsimProduct plan = controller.displayedPlans[index];
+                          return GestureDetector(
+                            onTap: () => controller.selectPlan(index),
+                            child: Container(
+                              color: Colors.transparent, // expand tap area
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      MyText(
+                                        text: controller.formatData(plan.dataQuotaMb),
+                                        fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+                                      ),
+                                      10.sbw,
+                                      MyText(
+                                        text: '${plan.validityDays} Days',
+                                        fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+                                      ),
+                                      Spacer(),
+                                      MyText(
+                                        text: '\$${plan.retailPrice.toStringAsFixed(2)}',
+                                        fontSize: 16, fontWeight: FontWeight.w500, color: R.theme.primary,
+                                      ),
+                                      10.sbw,
+                                      Obx(() => Radio<int>(
+                                        value: index,
+                                        groupValue: controller.selectedPlanIndex.value,
+                                        onChanged: (int? value) => controller.selectPlan(value!),
+                                        activeColor: R.theme.white,
+                                        fillColor: MaterialStateProperty.all(R.theme.white),
+                                      )),
+                                    ],
+                                  ),
+                                  Divider(color: R.theme.grey.withOpacity(0.5)),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      );
+                    }),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
       bottomNavigationBar: Obx(() {
@@ -303,7 +346,7 @@ class CardDetailsView extends GetView<CardDetailsController> {
                           arguments: {
                             'plan': selectedPlan,              // Contains uid, price, data, etc.
                             'quantity': controller.quantity.value,
-                            'countryName': controller.countryName,
+                            'name': controller.name,
                             'imageUrl': controller.imageUrl,
                           }
                       );

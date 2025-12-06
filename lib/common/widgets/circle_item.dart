@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pcom_app/app/core/core.dart';
 import 'package:pcom_app/common/widgets/build_image.dart';
 import 'my_text.dart';
@@ -14,26 +15,28 @@ class CircleItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 72,
+      width: 72.w,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipOval(
             child: buildImage(
               imageUrl,
-              width: imageSize,
-              height: imageSize,
+              width: imageSize.w,
+              height: imageSize.h,
               fit: BoxFit.fill,
               context: context,
             ),
           ),
-          10.sbh,
+          6.sbh,
           MyText(
             text: name,
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             color: R.theme.white,
-            fontSize: textSize,
+            fontSize: textSize.sp,
             fontWeight: FontWeight.w600,
           ),
         ],

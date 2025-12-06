@@ -33,39 +33,40 @@ class FaqView extends StatelessWidget {
                   children: [
 
                     const FaqsItems(
+                      initiallyExpanded: true,
                       question: 'What is an eSIM and how can you benefit from Wilixify?',
                       answer:
-                      '',
+                      'An eSIM (embedded SIM) is a digital SIM card that is directly installed on your smartphone or other mobile devices. It’s an alternative to the physical SIM card you’re used to.\n\nWith WilixifySoft, you can:\n• Activate your eSIM instantly.\n• Enjoy affordable data plans worldwide.\n• Avoid roaming fees and plastic waste.\n\nStay connected, hassle-free with WilixifySoft.',
                     ),
 
                     const FaqsItems(
-                      question: 'Why choose buy in Rise?',
+                      question: 'How to activate WilixifySoft eSIM?',
                       answer:
-                      '"You can add a friend either by searching their name in the search bar or by letting them sharing their profile for you from the profile page on yapo."',
+                      'Installation By SCAN:\n1. Go to “Settings” > “Connections”\n2. Go to “SIM Manager”\n3. Tap on “Add eSIM”\n4. Tap on Scan the QR Code\n5. Add and name your eSIM\n\nFor Manual Installation:\n1. Go to “Settings” > “Connections”\n2. Go to “SIM Manager”\n3. Tap on “Add eSIM”\n4. Tap on “Enter Activation Code” Below\n5. Enter the “SM-DP Address” by copying and pasting it\n6. Enter Activation Code\n7. Name your eSIM\n\nActivation Process:\nOnce arrived at your destination, please use the following steps:\n1. Select your WilixifySoft in “Mobile data”\n2. Activate the “Data Roaming”\n\nOnce your eSIM is activated, you can enjoy the benefits of high-speed internet.',
                     ),
 
                     const FaqsItems(
-                      question: 'What is Safar?',
+                      question: 'Is my eSIM activated instantly after purchase?',
                       answer:
-                      '"You can add a friend either by searching their name in the search bar or by letting them sharing their profile for you from the profile page on yapo."',
+                      'No, the eSIM does not activate immediately after purchase. You can keep it for up to 30 days before activating it at your convenience.\n\nOnce activated, the eSIM can be used as usual.',
                     ),
 
                     const FaqsItems(
-                      question: 'What is an eSIM and how can you benefit from Wilixify?',
+                      question: 'Why is WilixifySoft the best eSIM provider?',
                       answer:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut. aliquip ex ea commodo consequat. Duis aute irure dolor.',
+                      'At WilixifySoft, we’re dedicated to making your eSIM journey seamless and cost-effective. Here’s what sets us apart:\n\n• Affordable Pricing: Enjoy global data plans at unbeatable rates.\n• User-Friendly Setup: Activating your eSIM with Simbye is simple and hassle-free.\n• Instant Activation: Begin using your eSIM within minutes of purchase.\n• Customizable Plans: Select from a range of plans designed to suit your travel or local connectivity needs.',
                     ),
 
                     const FaqsItems(
-                      question: 'Why choose buy in Rise?',
+                      question: 'Can I use my SIM card and WilixifySoft eSIM at the same time?',
                       answer:
-                      '"You can add a friend either by searching their name in the search bar or by letting them sharing their profile for you from the profile page on yapo."',
+                      'Yes, if you use an Apple device, you can use your SIM card and your Simbye eSIM simultaneously:\n\n• SIM Card: Use it for phone calls and SMS.\n• WilixifySoft eSIM: Use it for mobile data.\n\nHowever, please note that your carrier may charge roaming fees if your SIM card remains active for receiving or sending calls and SMS while you are abroad. To avoid unexpected charges, consider disabling data roaming for your physical SIM.',
                     ),
 
                     const FaqsItems(
-                      question: 'What is Safar?',
+                      question: 'Should I remove my eSIM after using up its data?',
                       answer:
-                      '"You can add a friend either by searching their name in the search bar or by letting them sharing their profile for you from the profile page on yapo."',
+                      'No, it’s not mandatory to delete your eSIM after its data is used up. If you intend to recharge or reuse the same eSIM in the future, it’s better to keep it on your device. However, if you no longer need it or wish to free up space for a new eSIM, you can safely delete it from your device settings.\n\nPlease note that WilixifySoft offers eSIM data top-up options, allowing you to continue enjoying uninterrupted connectivity without replacing your eSIM.',
                     ),
                   ],
                 ),
@@ -113,9 +114,11 @@ class FaqsItems extends StatefulWidget {
     super.key,
     required this.question,
     required this.answer,
+    this.initiallyExpanded = false,
   });
   final String question;
   final String answer;
+  final bool initiallyExpanded;
 
   @override
   State<FaqsItems> createState() => _FaqsItemsState();
@@ -123,6 +126,13 @@ class FaqsItems extends StatefulWidget {
 
 class _FaqsItemsState extends State<FaqsItems> {
   var isShow = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isShow = widget.initiallyExpanded;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(

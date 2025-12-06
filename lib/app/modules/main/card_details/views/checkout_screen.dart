@@ -17,7 +17,7 @@ class CheckoutScreen extends StatelessWidget {
 
     final EsimProduct plan = args['plan']; // Contains plan.uid (The ID you wanted)
     final int quantity = args['quantity'];
-    final String countryName = args['countryName'];
+    final String name = args['name'];
     final String imageUrl = args['imageUrl'];
 
     // 2. CALCULATE TOTAL LOCALLY
@@ -35,7 +35,6 @@ class CheckoutScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // ... Background SVG code ...
           Positioned.fill(
             child: SvgPicture.asset(
               "assets/images/background.svg",
@@ -55,13 +54,14 @@ class CheckoutScreen extends StatelessWidget {
                   // --- TOP CARD ---
                   Container(
                     width: double.infinity,
-                    height: 160,
+                    height: 140, // Matched height to CardDetailsView
                     decoration: BoxDecoration(
                       color: R.theme.white,
                       borderRadius: 20.radius,
                     ),
                     child: Stack(
                       children: [
+                        // 1. Background Pattern
                         Positioned.fill(
                           child: ClipRRect(
                             borderRadius: 20.radius,
@@ -71,44 +71,78 @@ class CheckoutScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+
+                        // 2. Content
                         Padding(
                           padding: 16.all,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // --- Top Row (Image, Name, Icon) ---
                               Row(
                                 children: [
                                   ClipRRect(
                                     borderRadius: 50.radius,
-                                    child: buildImage(imageUrl, width: 30, height: 30, fit: BoxFit.cover, context: context),
+                                    child: buildImage(
+                                        imageUrl,
+                                        width: 30,
+                                        height: 30,
+                                        fit: BoxFit.cover,
+                                        context: context
+                                    ),
                                   ),
                                   10.sbw,
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      MyText(text: countryName, fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                                      // SHOWING THE ID FOR DEBUGGING IF NEEDED
-                                      MyText(text: 'ID: ${plan.uid}', fontSize: 8, color: Colors.grey),
+                                      MyText(
+                                        text: name,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                      // Matched style to "Standard eSIM" instead of ID for consistency
+                                      MyText(text: 'Standard eSIM', fontSize: 10, color: Colors.grey),
                                     ],
                                   ),
                                   Spacer(),
                                   buildImage('assets/images/ic_sim.png', width: 32, height: 26, context: context),
                                 ],
                               ),
+
+                              // --- Price Section (Single Total) ---
                               Padding(
-                                padding: const EdgeInsets.only(left: 40, top: 4),
+                                padding: const EdgeInsets.only(left: 40, top: 6),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: MyText(
                                     color: R.theme.black,
-                                    text: '\$${total.toStringAsFixed(2)}',
-                                    fontSize: 22,
+                                    text: '\$${total.toStringAsFixed(2)}', // Showing specific total
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
+
                               Spacer(),
-                              // ... Benefits Row ...
+
+                              // --- Benefits Section ---
+                              MyText(text: 'Plan Benefits:', fontSize: 10, fontWeight: FontWeight.bold, color: R.theme.black),
+                              8.sbh,
+                              Row(
+                                children: [
+                                  _buildBenefitItem(icon: 'assets/icons/ic_no_data.svg', text: 'Data only', context: context),
+                                  8.sbw,
+                                  _buildBenefitItem(icon: 'assets/icons/ic_speed.svg', text: 'Up to 5G', context: context),
+                                  8.sbw,
+                                  // Use the specific 'plan' object for validity
+                                  _buildBenefitItem(
+                                      iconObj: Icons.calendar_month_outlined,
+                                      text: '${plan.validityDays} days',
+                                      context: context
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -181,6 +215,19 @@ class CheckoutScreen extends StatelessWidget {
   String _formatData(int mb) {
     if (mb >= 1024) return "${(mb / 1024).toStringAsFixed(0)} GB";
     return "$mb MB";
+  }
+
+  Widget _buildBenefitItem({String? icon, IconData? iconObj, required String text, required BuildContext context}) {
+    return Row(
+      children: [
+        if (icon != null)
+          buildImage(icon, width: 12, height: 12, color: R.theme.grey, context: context)
+        else
+          Icon(iconObj, size: 12, color: R.theme.grey),
+        8.sbw,
+        MyText(text: text, fontSize: 10, color: R.theme.grey),
+      ],
+    );
   }
 
   Widget _buildPriceRow({required String label, required double price}) {

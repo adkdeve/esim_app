@@ -12,15 +12,12 @@ class DataUsageStatus extends GetView<DataUsageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         title: MyText(text: 'Data Usage Status', fontSize: 20),
         centerTitle: true,
       ),
-
       body: Stack(
         children: [
-
           Positioned.fill(
             child: SvgPicture.asset(
               "assets/images/background.svg",
@@ -29,90 +26,95 @@ class DataUsageStatus extends GetView<DataUsageController> {
               allowDrawingOutsideViewBox: true,
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-
                 40.sbh,
 
-                FlutterSemiCircle(
+                Obx(() => Column(
+                  children: [
+                    MyText(
+                      text: controller.planName.value,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: R.theme.white,
+                    ),
+                    15.sbh,
+                    MyText(
+                      text: "Status: ${controller.status.value}",
+                      fontSize: 12,
+                      color: controller.status.value == 'ACTIVE' ? Colors.green : Colors.grey,
+                    ),
+                  ],
+                )),
+
+                20.sbh,
+
+                // --- DYNAMIC GAUGE ---
+                Obx(() => FlutterSemiCircle(
                   height: 200,
                   width: 200,
                   thickness: 15,
-                  backgroundColor: R.theme.white,
-                  foregroundColor: Color(0xff9D0000),
+                  backgroundColor: R.theme.grey.withOpacity(0.2), // Light grey background for empty part
+                  foregroundColor: R.theme.primary, // Or Color(0xff9D0000)
                   totalValue: 100,
-                  currentValue: 35,
-                  child: const Column(
+                  currentValue: controller.remainingPercentage, // Dynamic %
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-
                       MyText(
-                        text: '123 MB',
+                        text: controller.remainingDataStr, // Dynamic Text
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
-
-                      SizedBox(
-                        height: 2,
-                      ),
-
-                      MyText(
+                      const SizedBox(height: 2),
+                      const MyText(
                         text: 'Remaining Data',
                         fontSize: 14,
                       ),
                     ],
                   ),
-                ),
+                )),
 
                 60.sbh,
 
-                Row(
+                // --- DYNAMIC STATS ---
+                Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
                     Column(
                       children: [
-
                         MyText(
-                          text: '1.88 GB',
+                          text: controller.usedDataStr, // Dynamic Used
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
-
-                        MyText(
+                        const MyText(
                           text: 'USED DATA',
                           fontSize: 14,
                           color: Colors.grey,
                         ),
-
                       ],
                     ),
-
                     40.sbw,
-
                     Column(
                       children: [
-
                         MyText(
-                          text: '2 GB',
+                          text: controller.totalDataStr, // Dynamic Total
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
-
-                        MyText(
-                          text: 'Total DATA',
+                        const MyText(
+                          text: 'TOTAL DATA',
                           fontSize: 14,
                           color: Colors.grey,
                         ),
                       ],
                     )
                   ],
-                ),
-
+                )),
               ],
             ),
           ),
