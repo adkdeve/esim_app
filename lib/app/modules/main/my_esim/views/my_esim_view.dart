@@ -624,6 +624,7 @@ class PlanCard extends StatelessWidget {
                         width: 30,
                         height: 30,
                         fit: BoxFit.cover,
+                        context: context
                       ),
                     ),
 

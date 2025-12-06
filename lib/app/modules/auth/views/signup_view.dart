@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 import 'package:pcom_app/app/core/core.dart';
+import 'package:pcom_app/app/modules/auth/controllers/signup_controller.dart';
 import 'package:pcom_app/app/modules/auth/views/signin_view.dart';
 import 'package:pcom_app/common/widgets/my_text.dart';
 import 'package:pcom_app/common/widgets/primary_button.dart';
@@ -12,11 +13,8 @@ import '../../../../common/widgets/social_button_widget.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/auth_controller.dart';
 
-class SignupView extends GetView<AuthController> {
+class SignupView extends GetView<SignupController> {
   SignupView({super.key});
-
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +33,10 @@ class SignupView extends GetView<AuthController> {
           ),
 
           SafeArea(
-
           child: SingleChildScrollView(
-
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-
             child: Column(
-
               crossAxisAlignment: CrossAxisAlignment.center,
-
               children: [
 
                 40.sbh,
@@ -63,8 +56,8 @@ class SignupView extends GetView<AuthController> {
 
                 CustomTextField(
                   label: 'Email',
-                  hintText: 'olivia@untitledui.com',
-                  controller: emailController,
+                  hintText: 'abc@example.com',
+                  controller: controller.emailController,
                 ),
 
                 10.sbh,
@@ -72,41 +65,48 @@ class SignupView extends GetView<AuthController> {
                 CustomTextField(
                   label: 'Password',
                   hintText: 'Password',
-                  controller: passwordController,
+                  controller: controller.passwordController,
                   obscureText: true,
                 ),
 
                 24.sbh,
 
-                PrimaryButton(
+                Obx(() => PrimaryButton(
                   color: R.theme.primary,
                   text: 'Sign up',
+                  disabled: !controller.isSignupButtonEnabled.value,
                   onPressed: () {
-                    Get.toNamed(Routes.SIGNIN);
-                  },
-                ),
+                      if (controller.isSignupButtonEnabled.value) {
+                        var data = {
+                          'email': controller.emailController.text,
+                          'password': controller.passwordController.text,
+                        };
+                        controller.authController.postApi(data, ApisUrl.signUp);
+                      }
+                    },
+                  ),),
 
-                10.sbh,
-
-                Padding(
-                  padding: 8.horizontal,
-                  child: MyText(
-                    text: 'Or',
-                    fontSize: 14,
-                    opacity: 0.4,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                10.sbh,
-
-                SocialButton(
-                  icon: 'assets/icons/ic_google.svg',
-                  text: 'Continue with Google',
-                  backgroundColor: R.theme.secondary,
-                  textColor: R.theme.textColor,
-                  borderColor: R.theme.transparent,
-                ),
+                // 10.sbh,
+                //
+                // Padding(
+                //   padding: 8.horizontal,
+                //   child: MyText(
+                //     text: 'Or',
+                //     fontSize: 14,
+                //     opacity: 0.4,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+                //
+                // 10.sbh,
+                //
+                // SocialButton(
+                //   icon: 'assets/icons/ic_google.svg',
+                //   text: 'Continue with Google',
+                //   backgroundColor: R.theme.secondary,
+                //   textColor: R.theme.textColor,
+                //   borderColor: R.theme.transparent,
+                // ),
 
                 20.sbh,
               ],
@@ -133,9 +133,16 @@ class SignupView extends GetView<AuthController> {
             14.sbw,
 
             GestureDetector(
-              onTap: () {
-                Get.toNamed(Routes.SIGNIN);
-              },
+              onTap: () async {
+                // 1. Close keyboard and remove focus
+                Get.focusScope?.unfocus();
+
+                // 2. Small delay to allow the keyboard to close and focus to detach
+                await Future.delayed(const Duration(milliseconds: 300));
+
+                // 3. Now navigate
+                Get.offAllNamed(Routes.SIGNIN);
+                },
               child: MyText(
                 text: 'Log in',
                 fontSize: 14,

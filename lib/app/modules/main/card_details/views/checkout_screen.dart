@@ -5,23 +5,37 @@ import 'package:pcom_app/app/core/core.dart';
 import '../../../../../common/widgets/build_image.dart';
 import '../../../../../common/widgets/my_text.dart';
 import '../../../../../common/widgets/primary_button.dart';
-import '../controllers/card_details_controller.dart';
+import '../../../../data/models/esim_model.dart';
 
-class CheckoutScreen extends GetView<CardDetailsController> {
-  const CheckoutScreen({super.key, required this.countryName, required this.imageUrl });
-  final String? imageUrl;
-  final String? countryName;
+class CheckoutScreen extends StatelessWidget {
+  const CheckoutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // 1. RETRIEVE ARGUMENTS
+    final args = Get.arguments as Map<String, dynamic>;
+
+    final EsimProduct plan = args['plan']; // Contains plan.uid (The ID you wanted)
+    final int quantity = args['quantity'];
+    final String countryName = args['countryName'];
+    final String imageUrl = args['imageUrl'];
+
+    // 2. CALCULATE TOTAL LOCALLY
+    final double total = plan.retailPrice * quantity;
+    final String dataAmount = _formatData(plan.dataQuotaMb);
+
     return Scaffold(
       appBar: AppBar(
         title: MyText(text: 'Checkout', fontSize: 20),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
       ),
       body: Stack(
         children: [
-
+          // ... Background SVG code ...
           Positioned.fill(
             child: SvgPicture.asset(
               "assets/images/background.svg",
@@ -31,7 +45,6 @@ class CheckoutScreen extends GetView<CardDetailsController> {
             ),
           ),
 
-
           SingleChildScrollView(
             child: Padding(
               padding: 16.all,
@@ -39,135 +52,63 @@ class CheckoutScreen extends GetView<CardDetailsController> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
 
+                  // --- TOP CARD ---
                   Container(
-                    width: 330,
-                    height: 150,
+                    width: double.infinity,
+                    height: 160,
                     decoration: BoxDecoration(
                       color: R.theme.white,
                       borderRadius: 20.radius,
                     ),
                     child: Stack(
                       children: [
-
                         Positioned.fill(
-                          child: SvgPicture.asset(
-                            'assets/icons/ic_credit_card_background.svg',
-                            fit: BoxFit.cover,
+                          child: ClipRRect(
+                            borderRadius: 20.radius,
+                            child: SvgPicture.asset(
+                              'assets/icons/ic_credit_card_background.svg',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-
                         Padding(
                           padding: 16.all,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               Row(
                                 children: [
-
                                   ClipRRect(
                                     borderRadius: 50.radius,
-                                    child: buildImage(
-                                      imageUrl ?? 'https://flagcdn.com/w320/cn.png',
-                                      width: 30,
-                                      height: 30,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: buildImage(imageUrl, width: 30, height: 30, fit: BoxFit.cover, context: context),
                                   ),
-
                                   10.sbw,
-
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-
-                                      MyText(
-                                        text: countryName ?? 'Country Name',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-
-                                      MyText(
-                                          text: 'eSIM',
-                                          fontSize: 10,
-                                          color: Colors.grey
-                                      ),
+                                      MyText(text: countryName, fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                                      // SHOWING THE ID FOR DEBUGGING IF NEEDED
+                                      MyText(text: 'ID: ${plan.uid}', fontSize: 8, color: Colors.grey),
                                     ],
                                   ),
-
                                   Spacer(),
-
-                                  buildImage('assets/images/ic_sim.png', width: 32, height: 26),
+                                  buildImage('assets/images/ic_sim.png', width: 32, height: 26, context: context),
                                 ],
                               ),
-
                               Padding(
-                                padding: const EdgeInsets.only(left: 40,top: 2),
+                                padding: const EdgeInsets.only(left: 40, top: 4),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: MyText(
                                     color: R.theme.black,
-                                    text: '\$5.00 – \$79.99',
-                                    fontSize: 18,
+                                    text: '\$${total.toStringAsFixed(2)}',
+                                    fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-
-                              20.sbh,
-
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: MyText(
-                                  text: 'Plan Benefits:',
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: R.theme.black,
-                                ),
-                              ),
-
-                              8.sbh,
-
-                              Row(
-                                children: [
-                                  Row(
-                                    children: [
-
-                                      buildImage('assets/icons/ic_no_data.svg', width: 12, height: 12, color: R.theme.grey),
-
-                                      8.sbw,
-
-                                      MyText(text: 'No share data', fontSize: 10, color: R.theme.grey),
-                                    ],
-                                  ),
-
-                                  8.sbw,
-
-                                  Row(
-                                    children: [
-
-                                      buildImage('assets/icons/ic_speed.svg', width: 12, height: 12, color: R.theme.grey),
-
-                                      8.sbw,
-
-                                      MyText(text: 'Up to 5G speed',fontSize: 10, color: R.theme.grey),
-                                    ],
-                                  ),
-
-                                  8.sbw,
-
-                                  Row(
-                                    children: [
-
-                                      Icon(Icons.calendar_month_outlined, size: 12, color: R.theme.grey),
-
-                                      8.sbw,
-
-                                      MyText(text: '7 days', fontSize: 10, color: R.theme.grey),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                              Spacer(),
+                              // ... Benefits Row ...
                             ],
                           ),
                         ),
@@ -177,6 +118,7 @@ class CheckoutScreen extends GetView<CardDetailsController> {
 
                   20.sbh,
 
+                  // --- PRICE BREAKDOWN ---
                   Container(
                     padding: 16.all,
                     decoration: BoxDecoration(
@@ -186,120 +128,30 @@ class CheckoutScreen extends GetView<CardDetailsController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
-                        MyText(
-                          text: 'Price detail',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-
+                        MyText(text: 'Price detail', fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                         16.sbh,
 
-                        Row(
-                          children: [
-                            MyText(text: 'No share data', fontSize: 12),
-                            Spacer(),
-                            MyText(text: '\$2.11', fontSize: 12)
-                          ],
-                        ),
-
+                        _buildPriceRow(label: 'Plan ($dataAmount)', price: plan.retailPrice),
                         8.sbh,
 
                         Row(
                           children: [
-                            MyText(text: 'Up to 5G speed', fontSize: 12),
+                            MyText(text: 'Quantity', fontSize: 12),
                             Spacer(),
-                            MyText(text: '\$0.99', fontSize: 12)
+                            MyText(text: 'x $quantity', fontSize: 12),
                           ],
                         ),
 
+                        Divider(color: R.theme.grey.withOpacity(0.5)),
                         8.sbh,
 
                         Row(
                           children: [
-                            MyText(text: 'Services fee', fontSize: 12),
+                            MyText(text: 'Total Amount', fontSize: 14, fontWeight: FontWeight.bold),
                             Spacer(),
-                            MyText(text: '\$0.90', fontSize: 12)
+                            MyText(text: '\$${total.toStringAsFixed(2)}', fontSize: 14, fontWeight: FontWeight.bold, color: R.theme.primary)
                           ],
                         ),
-
-                        8.sbh,
-
-                        Row(
-                          children: [
-                            MyText(text: 'Tax', fontSize: 12),
-                            Spacer(),
-                            MyText(text: '\$0.00', fontSize: 12)
-                          ],
-                        ),
-
-                        8.sbh,
-
-                        Row(
-                          children: [
-                            MyText(text: 'Subtotal', fontSize: 12),
-                            Spacer(),
-                            MyText(text: '\$4.00', fontSize: 12)
-                          ],
-                        ),
-
-                        8.sbh,
-
-                        Row(
-                          children: [
-                            MyText(text: 'Total', fontSize: 12),
-                            Spacer(),
-                            MyText(text: '\$4.00', fontSize: 12)
-                          ],
-                        ),
-
-                      ],
-                    ),
-                  ),
-
-                  8.sbh,
-
-                  Container(
-                    padding: 16.all,
-                    decoration: BoxDecoration(
-                      borderRadius: 12.radius,
-                      border: Border.all(color: R.theme.secondary, width: 2),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        Row(
-                          children: [
-
-                            Container(
-                                padding: 1.5.all,
-                                decoration: BoxDecoration(
-                                  color: R.theme.white,
-                                  borderRadius: 4.radius,
-                                ),
-                                child: SvgPicture.asset("assets/icons/ic_credit_icon.svg",width: 20, height: 20)
-                            ),
-
-                            4.sbw,
-
-                            MyText(text: "Payment method", fontSize: 16),
-
-                            Spacer(),
-
-                            IconButton(onPressed: () => {}, icon: Icon(Icons.edit), iconSize: 20)
-
-                          ],
-                        ),
-
-                        MyText(
-                          text: "You can choose or change the payment method to complete your order.",
-                          fontSize: 12,
-                          softWrap: true,
-                          textAlign: TextAlign.start,
-                        )
-
                       ],
                     ),
                   ),
@@ -313,16 +165,31 @@ class CheckoutScreen extends GetView<CardDetailsController> {
         minimum: const EdgeInsets.all(20),
         child: SizedBox(
           height: 56,
-          child: Container(
-            child: PrimaryButton(
-                color: R.theme.primary,
-                text: 'Continue to payment',
-                onPressed: () {
-
-                }),
-          ),
+          child: PrimaryButton(
+              color: R.theme.primary,
+              text: 'Pay \$${total.toStringAsFixed(2)}',
+              onPressed: () {
+                // ACCESS THE ID HERE FOR API SUBMISSION
+                print("Submitting Order for Plan ID: ${plan.uid}");
+                print("Total: $total");
+              }),
         ),
       ),
+    );
+  }
+
+  String _formatData(int mb) {
+    if (mb >= 1024) return "${(mb / 1024).toStringAsFixed(0)} GB";
+    return "$mb MB";
+  }
+
+  Widget _buildPriceRow({required String label, required double price}) {
+    return Row(
+      children: [
+        MyText(text: label, fontSize: 12),
+        Spacer(),
+        MyText(text: '\$${price.toStringAsFixed(2)}', fontSize: 12)
+      ],
     );
   }
 }

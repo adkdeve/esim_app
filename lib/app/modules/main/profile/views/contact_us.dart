@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -91,7 +93,7 @@ class ContactUSView extends GetView<ProfileController> {
                           child:
                           CustomTextField(
                             label: 'First Name',
-                            controller: controller.name,
+                            controller: controller.contactName,
                             hintText: 'Emily',
                             borderClr: Color(0xff0052b3),
                           )
@@ -101,7 +103,7 @@ class ContactUSView extends GetView<ProfileController> {
                           child:
                           CustomTextField(
                             label: 'Last Name',
-                            controller: controller.name,
+                            controller: controller.contactlastName,
                             hintText: 'John',
                             borderClr: Color(0xff0052b3),
                           )
@@ -114,7 +116,7 @@ class ContactUSView extends GetView<ProfileController> {
                   CustomTextField(
                     label: 'Email',
                     hintText: 'emily@untitledui.com',
-                    controller: controller.email,
+                    controller: controller.contactEmail,
                     borderClr: Color(0xff0052b3),
                   ),
 
@@ -123,7 +125,7 @@ class ContactUSView extends GetView<ProfileController> {
                   CustomTextField(
                     label: 'Subject',
                     hintText: 'Abc',
-                    controller: controller.name,
+                    controller: controller.contactSubject,
                     borderClr: Color(0xff0052b3),
                   ),
 
@@ -132,7 +134,7 @@ class ContactUSView extends GetView<ProfileController> {
                   CustomTextField(
                     label: 'Message',
                     hintText: 'Abc',
-                    controller: controller.name,
+                    controller: controller.contactMessage,
                     borderClr: Color(0xff0052b3),
                   ),
 
@@ -147,7 +149,20 @@ class ContactUSView extends GetView<ProfileController> {
         minimum: const EdgeInsets.all(20),
         child: SizedBox(
           height: 56,
-          child: PrimaryButton(color: R.theme.primary, text: 'Send Message', onPressed: () => {}),
+          child: PrimaryButton(
+              color: R.theme.primary,
+              text: 'Send Message',
+              onPressed: () {
+                var data = jsonEncode({
+                  "name": controller.contactName.text,
+                  "lastName": controller.contactlastName.text,
+                  "email": controller.contactEmail.text,
+                  "subject": controller.contactSubject.text,
+                  "message": controller.contactMessage.text,
+                });
+                controller.mainController.postApi(data, ApisUrl.contactUs);
+              }
+          ),
         ),
       ),
     );

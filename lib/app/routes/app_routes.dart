@@ -4,6 +4,7 @@ part of 'app_pages.dart';
 abstract class Routes {
   Routes._();
   static const ONBOARDING = _Paths.ONBOARDING;
+  static const FINALONBOARDING = _Paths.FINALONBOARDING;
   static const AUTH = _Paths.AUTH;
   static const SIGNIN = _Paths.AUTH + _Paths.SIGNIN;
   static const SIGNUP = _Paths.AUTH + _Paths.SIGNUP;
@@ -17,7 +18,7 @@ abstract class Routes {
   static const CONTACT_US = _Paths.MAIN + _Paths.CONTACT_US;
   static const FAQ = _Paths.MAIN + _Paths.FAQ;
   static const PRIVACY_POLICY = _Paths.MAIN + _Paths.PRIVACY_POLICY;
-  static const TERMS_AND_CONDITION = _Paths.MAIN + _Paths.TERMS_AND_CONDITION;
+  static const RETURN_POLICY = _Paths.MAIN + _Paths.RETURN_POLICY;
   static const GUIDE = _Paths.MAIN + _Paths.GUIDE;
   static const MY_ESIM = _Paths.MAIN + _Paths.MY_ESIM;
 }
@@ -25,9 +26,10 @@ abstract class Routes {
 abstract class _Paths {
   _Paths._();
   static const ONBOARDING = '/onboarding';
+  static const FINALONBOARDING = '/final-onboarding';
   static const AUTH = '/auth';
-  static const SIGNIN = '/signin';
-  static const SIGNUP = '/signup';
+  static const SIGNIN = '/auth/signin';
+  static const SIGNUP = '/auth/signup';
   static const MAIN = '/main';
   static const HOME = '/home';
   static const DATA_USAGE = '/data-usage';
@@ -38,7 +40,7 @@ abstract class _Paths {
   static const CONTACT_US = '/contact-us';
   static const FAQ = '/faq';
   static const PRIVACY_POLICY = '/privacy-policy';
-  static const TERMS_AND_CONDITION = '/terms-and-condition';
+  static const RETURN_POLICY = '/return-policy';
   static const GUIDE = '/guide';
   static const MY_ESIM = '/my-esim';
 }

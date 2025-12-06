@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:pcom_app/app/modules/auth/bindings/signin_binding.dart';
+import 'package:pcom_app/app/modules/auth/bindings/signup_binding.dart';
 import 'package:pcom_app/app/modules/auth/views/signin_view.dart';
 import 'package:pcom_app/app/modules/auth/views/signup_view.dart';
 import 'package:pcom_app/app/modules/main/profile/views/change_password.dart';
@@ -6,7 +8,8 @@ import 'package:pcom_app/app/modules/main/profile/views/contact_us.dart';
 import 'package:pcom_app/app/modules/main/profile/views/faq_view.dart';
 import 'package:pcom_app/app/modules/main/profile/views/privacy_policy.dart';
 import 'package:pcom_app/app/modules/main/profile/views/profile_edit.dart';
-import 'package:pcom_app/app/modules/main/profile/views/terms_and_condition.dart';
+import 'package:pcom_app/app/modules/main/profile/views/return_policy.dart';
+import 'package:pcom_app/app/modules/onboarding/views/final_onboarding.dart';
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/auth_view.dart';
 import '../modules/main/bindings/main_binding.dart';
@@ -31,7 +34,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.ONBOARDING;
+  static const INITIAL = Routes.MAIN;
 
   static final routes = [
     GetPage(
@@ -42,12 +45,12 @@ class AppPages {
         GetPage(
           name: _Paths.SIGNIN,
           page: () => SigninView(),
-          binding: AuthBinding(),
+          binding: SigninBinding(),
         ),
         GetPage(
           name: _Paths.SIGNUP,
           page: () => SignupView(),
-          binding: AuthBinding(),
+          binding: SignupBinding(),
         ),
       ]
     ),
@@ -68,7 +71,7 @@ class AppPages {
         ),
         GetPage(
           name: _Paths.CARD_DETAILS,
-          page: () => const CardDetailsView(countryName: '', imageUrl: '',),
+          page: () => const CardDetailsView(),
           binding: CardDetailsBinding(),
         ),
         GetPage(
@@ -102,8 +105,8 @@ class AppPages {
           binding: ProfileBinding(),
         ),
         GetPage(
-          name: _Paths.TERMS_AND_CONDITION,
-          page: () => const TermsView(),
+          name: _Paths.RETURN_POLICY,
+          page: () => const ReturnPolicy(),
           binding: ProfileBinding(),
         ),
         GetPage(
@@ -122,6 +125,13 @@ class AppPages {
       name: _Paths.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+      children: [
+        GetPage(
+          name: _Paths.FINALONBOARDING,
+          page: () => FinalOnboarding(),
+          binding: OnboardingBinding(),
+        ),
+      ]
     ),
   ];
 }

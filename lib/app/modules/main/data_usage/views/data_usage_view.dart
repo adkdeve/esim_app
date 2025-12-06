@@ -76,36 +76,36 @@ class DataUsageView extends GetView<DataUsageController> {
                     ],
                   ),
         
-                  35.sbh,
-        
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-        
-                      MyText(text: 'For Top-up:', fontSize: 18),
-        
-                      5.sbh,
-        
-                      MyText(text: 'Enter existing eSIM Order Number', fontSize: 14, opacity: 0.5),
-        
-                      10.sbh,
-        
-                      MyTextFormField(
-                        hinttxt: 'Enter here',
-                        controller: controller.esimIDController,
-                      ),
-        
-                      12.sbh,
-        
-                      MyText(
-                        text: 'Enter your previous order number and choose from the available packages. The data will be instantly added to your existing eSIM.',
-                        fontSize: 12,
-                        opacity: 0.5,
-                        softWrap: true,
-                        textAlign: TextAlign.start,
-                      ),
-                    ],
-                  ),
+                  // 35.sbh,
+                  //
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //
+                  //     MyText(text: 'For Top-up:', fontSize: 18),
+                  //
+                  //     5.sbh,
+                  //
+                  //     MyText(text: 'Enter existing eSIM Order Number', fontSize: 14, opacity: 0.5),
+                  //
+                  //     10.sbh,
+                  //
+                  //     MyTextFormField(
+                  //       hinttxt: 'Enter here',
+                  //       controller: controller.esimIDController,
+                  //     ),
+                  //
+                  //     12.sbh,
+                  //
+                  //     MyText(
+                  //       text: 'Enter your previous order number and choose from the available packages. The data will be instantly added to your existing eSIM.',
+                  //       fontSize: 12,
+                  //       opacity: 0.5,
+                  //       softWrap: true,
+                  //       textAlign: TextAlign.start,
+                  //     ),
+                  //   ],
+                  // ),
         
                 ],
               ),

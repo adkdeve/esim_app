@@ -1,5 +1,5 @@
 extension StringExtensions on String {
-  bool get isEmail =>
+  bool get isEmailAddress =>
       RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(this);
 
   bool get isPhone => RegExp(r'^\+?[0-9]{7,15}$').hasMatch(this);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:pcom_app/app/core/core.dart';
 
@@ -8,13 +7,12 @@ import '../../../../../common/widgets/build_image.dart';
 import '../../../../../common/widgets/my_text.dart';
 import '../../../../../common/widgets/primary_button.dart';
 import '../../../../../common/widgets/smooth_rectangle_border.dart';
+import '../../../../data/models/esim_model.dart';
 import '../controllers/card_details_controller.dart';
 import 'checkout_screen.dart';
 
 class CardDetailsView extends GetView<CardDetailsController> {
-  const CardDetailsView({super.key, required this.countryName, required this.imageUrl });
-  final String? imageUrl;
-  final String? countryName;
+  const CardDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +21,12 @@ class CardDetailsView extends GetView<CardDetailsController> {
         title: MyText(text: 'Card Detail', fontSize: 20),
         centerTitle: true,
         leading: IconButton(
-            onPressed: () {
-            },
+            onPressed: () => Get.back(),
             icon: Icon(Icons.arrow_back)
         ),
       ),
       body: Stack(
         children: [
-
           Positioned.fill(
             child: SvgPicture.asset(
               "assets/images/background.svg",
@@ -39,376 +35,314 @@ class CardDetailsView extends GetView<CardDetailsController> {
               allowDrawingOutsideViewBox: true,
             ),
           ),
-
           SingleChildScrollView(
-          child: Padding(
-            padding: 16.all,
-            child: Column(
-              children: [
+            child: Padding(
+              padding: 16.all,
+              child: Column(
+                children: [
 
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: AppConfig.defaultPadding,
-                  ),
-                  child: SizedBox(
-                    height: 24,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.category.length,
-                      itemBuilder: (c, i) {
-                        return Obx(() {
-                          var isSelected = i == controller.selectedIndex.value;
-                          return GestureDetector(
-                            onTap: () {
-                              controller.selectedIndex.value = i;
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 6,
-                              ),
-                              decoration: ShapeDecoration(
-                                color: isSelected
-                                    ? R.theme.primary
-                                    : R.theme.secondary,
-                                shape: SmoothRectangleBorder(
-                                  smoothness: 1,
-                                  borderRadius: BorderRadius.circular(
-                                    AppConfig.defaultPadding,
+                  // --- Category (Validity Days) Selector ---
+                  Padding(
+                    padding: const EdgeInsets.only(left: AppConfig.defaultPadding),
+                    child: SizedBox(
+                      height: 35, // Increased height slightly to prevent clipping
+                      child: Obx(() {
+                        // This outer Obx listens to 'category' list changes (data loading)
+                        if (controller.category.isEmpty) return SizedBox();
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: controller.category.length,
+                          itemBuilder: (c, i) {
+
+                            // --- FIX START ---
+                            // Wrap the individual item in Obx.
+                            // Now, when selectedCategoryIndex changes, only the specific items update their color.
+                            return Obx(() {
+                              var isSelected = i == controller.selectedCategoryIndex.value;
+
+                              return GestureDetector(
+                                onTap: () => controller.filterPlansByIndex(i),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  margin: const EdgeInsets.only(right: 8),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                  decoration: ShapeDecoration(
+                                    color: isSelected ? R.theme.primary : R.theme.secondary,
+                                    shape: SmoothRectangleBorder(
+                                      smoothness: 1,
+                                      borderRadius: BorderRadius.circular(AppConfig.defaultPadding),
+                                      side: BorderSide(
+                                          width: 0.5,
+                                          color: isSelected ? Colors.transparent : R.theme.grey
+                                      ),
+                                    ),
                                   ),
-                                  side: BorderSide(
-                                    width: 0.5,
+                                  child: Center(
+                                    child: MyText(
+                                      text: controller.category[i],
+                                      fontSize: 12,
+                                      color: isSelected ? R.theme.white : R.theme.color600,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
+                              );
+                            });
+                            // --- FIX END ---
 
-                              ),
-                              child: Center(
-                                child: MyText(
-                                  text: controller.category[i],
-                                  fontSize: 12,
-                                  color: isSelected
-                                      ? R.theme.white
-                                      : R.theme.color600,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          );
-                        });
-                      },
+                          },
+                        );
+                      }),
                     ),
                   ),
-                ),
 
-                30.sbh,
+                  30.sbh,
 
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: MyText(
-                    text: 'Recommendation',
-                    fontSize: 18,
-                    textAlign: TextAlign.left,
-                    fontWeight: FontWeight.w700,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: MyText(
+                      text: 'Recommendation',
+                      fontSize: 18,
+                      textAlign: TextAlign.left,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
 
-                4.sbh,
+                  4.sbh,
 
-                Container(
-                  width: 330,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: R.theme.white,
-                    borderRadius: 20.radius,
-                  ),
-                  child: Stack(
-                    children: [
-
-                      Positioned.fill(
-                        child: SvgPicture.asset(
-                          'assets/icons/ic_credit_card_background.svg',
-                          fit: BoxFit.cover,
+                  // --- Recommendation / Info Card ---
+                  Container(
+                    width: double.infinity,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: R.theme.white,
+                      borderRadius: 20.radius,
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius: 20.radius,
+                            child: SvgPicture.asset(
+                              'assets/icons/ic_credit_card_background.svg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
-
-                      Padding(
-                        padding: 16.all,
-                        child: Column(
-                          children: [
-
-                            Row(
-                              children: [
-
-                                ClipRRect(
-                                  borderRadius: 50.radius,
-                                  child: buildImage(
-                                    imageUrl ?? 'https://flagcdn.com/w320/cn.png',
-                                    width: 30,
-                                    height: 30,
-                                    fit: BoxFit.cover,
+                        Padding(
+                          padding: 16.all,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: 50.radius,
+                                    child: buildImage(
+                                        controller.imageUrl,
+                                        width: 30,
+                                        height: 30,
+                                        fit: BoxFit.cover,
+                                        context: context
+                                    ),
+                                  ),
+                                  10.sbw,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      MyText(
+                                        text: controller.countryName,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                      MyText(text: 'Standard eSIM', fontSize: 10, color: Colors.grey),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  buildImage('assets/images/ic_sim.png', width: 32, height: 26, context: context),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 40, top: 6),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child:  MyText(
+                                    color: R.theme.black,
+                                    text: controller.priceRange, // Dynamic Price Range
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-
-                                10.sbw,
-
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-
-                                    MyText(
-                                      text: countryName ?? 'Country Name',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-
-                                    MyText(
-                                        text: 'eSIM',
-                                        fontSize: 10,
-                                        color: Colors.grey
-                                    ),
-                                  ],
-                                ),
-
-                                Spacer(),
-
-                                buildImage('assets/images/ic_sim.png', width: 32, height: 26),
-                              ],
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.only(left: 40,top: 2),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: MyText(
-                                  color: R.theme.black,
-                                  text: '\$5.00 – \$79.99',
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
                               ),
-                            ),
-
-                            20.sbh,
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: MyText(
-                                text: 'Plan Benefits:',
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: R.theme.black,
-                              ),
-                            ),
-
-                            8.sbh,
-
-                            Row(
-                              children: [
-                                Row(
-                                  children: [
-
-                                    buildImage('assets/icons/ic_no_data.svg', width: 12, height: 12, color: R.theme.grey),
-
-                                    8.sbw,
-
-                                    MyText(text: 'No share data', fontSize: 10, color: R.theme.grey),
-                                  ],
-                                ),
-
-                                8.sbw,
-
-                                Row(
-                                  children: [
-
-                                    buildImage('assets/icons/ic_speed.svg', width: 12, height: 12, color: R.theme.grey),
-
-                                    8.sbw,
-
-                                    MyText(text: 'Up to 5G speed',fontSize: 10, color: R.theme.grey),
-                                  ],
-                                ),
-
-                                8.sbw,
-
-                                Row(
-                                  children: [
-
-                                    Icon(Icons.calendar_month_outlined, size: 12, color: R.theme.grey),
-
-                                    8.sbw,
-
-                                    MyText(text: '7 days', fontSize: 10, color: R.theme.grey),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                20.sbh,
-
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: MyText(
-                    text: '8 Available Plans',
-                    fontSize: 18,
-                    textAlign: TextAlign.left,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-
-                20.sbh,
-
-                Column(
-                  children: controller.plans.map((plan) {
-                    return Obx(
-                          () => Column(
-                        children: [
-
-                          Row(
-                            children: [
-
-                              MyText(
-                                text: '${plan['data']}',
-                                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
-                              ),
-
-                              10.sbw,
-
-                              MyText(
-                                text: '${plan['validity']}',
-                                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
-                              ),
-
                               Spacer(),
-
-                              Radio<int>(
-                                value: plan['index'],
-                                groupValue: controller.selectedPlanIndex.value,
-                                onChanged: (int? value) {
-                                  controller.selectedPlanIndex.value = value!;
-                                  controller.quantity.value = 1;
-                                },
-                                activeColor: R.theme.white,
+                              MyText(text: 'Plan Benefits:', fontSize: 10, fontWeight: FontWeight.bold, color: R.theme.black),
+                              8.sbh,
+                              Row(
+                                children: [
+                                  _buildBenefitItem(icon: 'assets/icons/ic_no_data.svg', text: 'Data only', context: context),
+                                  8.sbw,
+                                  _buildBenefitItem(icon: 'assets/icons/ic_speed.svg', text: 'Up to 5G', context: context),
+                                  8.sbw,
+                                  // Dynamic validity based on selection
+                                  Obx(() {
+                                    final plan = controller.recommendedPlan;
+                                    return _buildBenefitItem(
+                                        iconObj: Icons.calendar_month_outlined,
+                                        text: plan != null ? '${plan.validityDays} days' : '--',
+                                        context: context
+                                    );
+                                  }),
+                                ],
                               ),
                             ],
-                          ),
-
-                          Divider(color: R.theme.grey),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-
-              ],
-            ),
-          ),
-        ),
-        ]
-      ),
-      bottomNavigationBar: Obx(() {
-        final idx = controller.selectedPlanIndex.value;
-        if (idx == -1) return const SizedBox.shrink();
-
-        final selectedPlan = controller.plans[idx];
-        final int qty = controller.quantity.value;
-        final double totalPrice = selectedPlan['price'] * qty;
-        final String planDescription = "${selectedPlan['data']}, ${selectedPlan['validity']}";
-        
-        return SafeArea(
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 130,
-            decoration: BoxDecoration(
-              color: R.theme.backgroundClr,
-            ),
-            padding: EdgeInsets.only(left: 16, right: 16, top: 16),
-            child: Column(
-              children: [
-            
-                Row(
-                  children: [
-            
-                    MyText(text: planDescription, fontSize: 20),
-            
-                    Spacer(),
-            
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-            
-                        Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 1), // White border around the button
-                            borderRadius: BorderRadius.circular(8), // Rounded corners for the button
-                          ),
-                          child: IconButton(
-                            icon: Icon(Icons.remove, color: Colors.white, size: 14),
-                            onPressed: () {
-                              if (controller.quantity.value > 1) {
-                                controller.quantity.value--;
-                              }
-                            },
-                          ),
-                        ),
-            
-                        12.sbw,
-            
-                        Obx(
-                              () => MyText(
-                              text: '${controller.quantity.value}',
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
-                        ),
-            
-                        12.sbw,
-            
-                        Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 1), // White border around the button
-                            borderRadius: BorderRadius.circular(8), // Rounded corners for the button
-                          ),
-                          child: IconButton(
-                            icon: Icon(Icons.add, color: Colors.white,size: 14),
-                            onPressed: () {
-                              controller.quantity.value++;
-                            },
                           ),
                         ),
                       ],
                     ),
-            
+                  ),
+
+                  20.sbh,
+
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Obx(() => MyText(
+                      text: '${controller.displayedPlans.length} Available Plans',
+                      fontSize: 18,
+                      textAlign: TextAlign.left,
+                      fontWeight: FontWeight.w700,
+                    )),
+                  ),
+
+                  20.sbh,
+
+                  // --- Plans List ---
+                  Obx(() {
+                    if (controller.displayedPlans.isEmpty) {
+                      return Center(child: MyText(text: "No plans found for this category", fontSize: null,));
+                    }
+                    return Column(
+                      children: List.generate(controller.displayedPlans.length, (index) {
+                        EsimProduct plan = controller.displayedPlans[index];
+                        return GestureDetector(
+                          onTap: () => controller.selectPlan(index),
+                          child: Container(
+                            color: Colors.transparent, // expand tap area
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    MyText(
+                                      text: controller.formatData(plan.dataQuotaMb),
+                                      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+                                    ),
+                                    10.sbw,
+                                    MyText(
+                                      text: '${plan.validityDays} Days',
+                                      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+                                    ),
+                                    Spacer(),
+                                    MyText(
+                                      text: '\$${plan.retailPrice.toStringAsFixed(2)}',
+                                      fontSize: 16, fontWeight: FontWeight.w500, color: R.theme.primary,
+                                    ),
+                                    10.sbw,
+                                    Obx(() => Radio<int>(
+                                      value: index,
+                                      groupValue: controller.selectedPlanIndex.value,
+                                      onChanged: (int? value) => controller.selectPlan(value!),
+                                      activeColor: R.theme.white,
+                                      fillColor: MaterialStateProperty.all(R.theme.white),
+                                    )),
+                                  ],
+                                ),
+                                Divider(color: R.theme.grey.withOpacity(0.5)),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Obx(() {
+        if (controller.selectedPlanIndex.value == -1) return const SizedBox.shrink();
+
+        return SafeArea(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 130,
+            decoration: BoxDecoration(color: R.theme.backgroundClr),
+            padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    MyText(text: controller.selectedPlanDescription, fontSize: 20),
                   ],
                 ),
-            
                 20.sbh,
-            
                 PrimaryButton(
                     color: R.theme.primary,
-                    text: 'Choose a plan',
+                    text: 'Pay \$${controller.totalPrice.toStringAsFixed(2)}', // Show total price on button
                     onPressed: () {
-                      Get.to(CheckoutScreen(imageUrl: imageUrl, countryName: countryName));
+                      // 1. Get the selected plan object
+                      final selectedPlan = controller.displayedPlans[controller.selectedPlanIndex.value];
+
+                      // 2. Navigate and pass data as arguments
+                      Get.to(
+                              () => const CheckoutScreen(),
+                          arguments: {
+                            'plan': selectedPlan,              // Contains uid, price, data, etc.
+                            'quantity': controller.quantity.value,
+                            'countryName': controller.countryName,
+                            'imageUrl': controller.imageUrl,
+                          }
+                      );
                     }
                 )
               ],
             ),
           ),
         );
-      }
+      }),
+    );
+  }
+
+  // Helper for Benefit Items
+  Widget _buildBenefitItem({String? icon, IconData? iconObj, required String text, required BuildContext context}) {
+    return Row(
+      children: [
+        if (icon != null)
+          buildImage(icon, width: 12, height: 12, color: R.theme.grey, context: context)
+        else
+          Icon(iconObj, size: 12, color: R.theme.grey),
+        8.sbw,
+        MyText(text: text, fontSize: 10, color: R.theme.grey),
+      ],
+    );
+  }
+
+  // Helper for Qty Buttons
+  Widget _buildQtyBtn({required IconData icon, required VoidCallback onTap}) {
+    return Container(
+      width: 30, height: 30,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white, width: 1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white, size: 14),
+        onPressed: onTap,
+        padding: EdgeInsets.zero,
       ),
     );
   }

@@ -27,7 +27,7 @@ class SocialButton extends StatelessWidget {
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: () {},
-        icon: buildImage(icon, width: 24),
+        icon: buildImage(icon, width: 24, context: context),
         label: MyText(text: text, color: textColor, fontSize: 16),
         style: OutlinedButton.styleFrom(
           backgroundColor: backgroundColor,

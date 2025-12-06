@@ -47,44 +47,44 @@ class ProfileEdit extends GetView<ProfileController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children:
                       [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: 110,
-                              height: 110,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: R.theme.primary, width: 1),
-                              ),
-                              padding: const EdgeInsets.all(3),
-                              child: const CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                  'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=600&auto=format&fit=crop',
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 8,
-                              bottom: 8,
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  color: R.theme.primary,
-                                  shape: BoxShape.circle,
-                                  boxShadow: const [
-                                    BoxShadow(color: Colors.black54, blurRadius: 6)
-                                  ],
-                                ),
-                                child: SvgPicture.asset('assets/icons/ic_image_add.svg'),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        12.sbh,
+                        // Stack(
+                        //   clipBehavior: Clip.none,
+                        //   alignment: Alignment.center,
+                        //   children: [
+                        //     Container(
+                        //       width: 110,
+                        //       height: 110,
+                        //       decoration: BoxDecoration(
+                        //         shape: BoxShape.circle,
+                        //         border: Border.all(color: R.theme.primary, width: 1),
+                        //       ),
+                        //       padding: const EdgeInsets.all(3),
+                        //       child: const CircleAvatar(
+                        //         backgroundImage: NetworkImage(
+                        //           'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=600&auto=format&fit=crop',
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Positioned(
+                        //       right: 8,
+                        //       bottom: 8,
+                        //       child: Container(
+                        //         width: 20,
+                        //         height: 20,
+                        //         decoration: BoxDecoration(
+                        //           color: R.theme.primary,
+                        //           shape: BoxShape.circle,
+                        //           boxShadow: const [
+                        //             BoxShadow(color: Colors.black54, blurRadius: 6)
+                        //           ],
+                        //         ),
+                        //         child: SvgPicture.asset('assets/icons/ic_image_add.svg'),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        //
+                        // 12.sbh,
 
                         MyText(
                               text: 'Samilon',
@@ -115,6 +115,7 @@ class ProfileEdit extends GetView<ProfileController> {
                       TextFormField(
                         controller: controller.email,
                         keyboardType: TextInputType.emailAddress,
+                        enabled: false,
                         decoration: InputDecoration(
                           labelText: 'Email',
                           labelStyle: TextStyle(color: R.theme.primary),
@@ -124,51 +125,51 @@ class ProfileEdit extends GetView<ProfileController> {
 
                       24.sbh,
 
-                      TextFormField(
-                        controller: controller.phone,
-                        keyboardType: TextInputType.phone,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          labelText: 'Phone Number',
-                          labelStyle: TextStyle(color: R.theme.primary),
-                          border: OutlineInputBorder(),
-                          prefixIconConstraints:
-                          const BoxConstraints(minWidth: 0, minHeight: 0),
-                          prefix: InkWell(
-                            onTap: () async {
-                              final result = await showModalBottomSheet<String>(
-                                context: context,
-                                backgroundColor:
-                                const Color(0xFF0F172A), // dark sheet
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20)),
-                                ),
-                                builder: (ctx) => _CountrySheet(
-                                  items: controller.countries,
-                                  selected: controller.selectedCountry,
-                                ),
-                              );
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(width: 12),
-                                Text(
-                                  controller.selectedCountry,
-                                  style: const TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                                const SizedBox(width: 6),
-                                const Icon(Icons.arrow_drop_down,
-                                    size: 20, color: Colors.white70),
-                                const SizedBox(width: 12),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                      ),
+                      // TextFormField(
+                      //   controller: controller.phone,
+                      //   keyboardType: TextInputType.phone,
+                      //   style: const TextStyle(color: Colors.white),
+                      //   decoration: InputDecoration(
+                      //     labelText: 'Phone Number',
+                      //     labelStyle: TextStyle(color: R.theme.primary),
+                      //     border: OutlineInputBorder(),
+                      //     prefixIconConstraints:
+                      //     const BoxConstraints(minWidth: 0, minHeight: 0),
+                      //     prefix: InkWell(
+                      //       onTap: () async {
+                      //         final result = await showModalBottomSheet<String>(
+                      //           context: context,
+                      //           backgroundColor:
+                      //           const Color(0xFF0F172A), // dark sheet
+                      //           shape: const RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.vertical(
+                      //                 top: Radius.circular(20)),
+                      //           ),
+                      //           builder: (ctx) => _CountrySheet(
+                      //             items: controller.countries,
+                      //             selected: controller.selectedCountry,
+                      //           ),
+                      //         );
+                      //       },
+                      //       child: Row(
+                      //         mainAxisSize: MainAxisSize.min,
+                      //         children: [
+                      //           const SizedBox(width: 12),
+                      //           Text(
+                      //             controller.selectedCountry,
+                      //             style: const TextStyle(
+                      //                 fontSize: 16, color: Colors.white),
+                      //           ),
+                      //           const SizedBox(width: 6),
+                      //           const Icon(Icons.arrow_drop_down,
+                      //               size: 20, color: Colors.white70),
+                      //           const SizedBox(width: 12),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      //
+                      // ),
 
                       24.sbh,
 

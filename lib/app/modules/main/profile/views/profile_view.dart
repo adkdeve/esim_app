@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:pcom_app/app/core/core.dart';
 import 'package:pcom_app/app/modules/main/profile/views/privacy_policy.dart';
 import 'package:pcom_app/app/modules/main/profile/views/profile_edit.dart';
-import 'package:pcom_app/app/modules/main/profile/views/terms_and_condition.dart';
+import 'package:pcom_app/app/modules/main/profile/views/return_policy.dart';
 import '../../../../../common/widgets/my_text.dart';
 import '../controllers/profile_controller.dart';
 import 'change_password.dart';
@@ -58,24 +58,24 @@ class ProfileView extends GetView<ProfileController> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
 
-                          Container(
-                            padding: EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: R.theme.primary,
-                                width: 1,
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              radius: 40,
-                              backgroundImage: NetworkImage(
-                                'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg',
-                              ),
-                            ),
-                          ),
-
-                          12.sbh,
+                          // Container(
+                          //   padding: EdgeInsets.all(2),
+                          //   decoration: BoxDecoration(
+                          //     shape: BoxShape.circle,
+                          //     border: Border.all(
+                          //       color: R.theme.primary,
+                          //       width: 1,
+                          //     ),
+                          //   ),
+                          //   child: CircleAvatar(
+                          //     radius: 40,
+                          //     backgroundImage: NetworkImage(
+                          //       'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg',
+                          //     ),
+                          //   ),
+                          // ),
+                          //
+                          // 12.sbh,
 
                           MyText(
                             text: 'Samilon',
@@ -102,17 +102,17 @@ class ProfileView extends GetView<ProfileController> {
                       child: OptionItem(iconData: Icons.account_circle_outlined,title: 'Edit Profile', isToggle: false),
                     ),
 
-                    GestureDetector(
-                      onTap: () {
-
-                      },
-                      child: OptionItem(
-                        iconData: Icons.notifications_active_outlined,
-                        title: 'Notifications',
-                        isToggle: true,
-                        isActive: true,
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //
+                    //   },
+                    //   child: OptionItem(
+                    //     iconData: Icons.notifications_active_outlined,
+                    //     title: 'Notifications',
+                    //     isToggle: true,
+                    //     isActive: true,
+                    //   ),
+                    // ),
 
                     GestureDetector(
                       onTap: () {
@@ -130,7 +130,7 @@ class ProfileView extends GetView<ProfileController> {
 
                     GestureDetector(
                       onTap: () {
-                        Get.to(TermsView());
+                        Get.to(ReturnPolicy());
                       },
                       child: OptionItem(iconData: Icons.info_outline_rounded,title: 'Terms & Conditions', isToggle: false),
                     ),

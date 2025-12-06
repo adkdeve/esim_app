@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -29,6 +30,7 @@ void main() async {
             initialBinding: AppBinding(),
             debugShowCheckedModeBanner: false,
             defaultTransition: Transition.rightToLeft,
+            builder: EasyLoading.init(),
             // Localization
             translations: MyAppTranslation(),
             locale: AppConfig.defaultLocale,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pcom_app/app/core/core.dart';
-import 'package:pcom_app/app/modules/auth/views/signup_view.dart';
+import 'package:pcom_app/app/modules/auth/controllers/signin_controller.dart';
 import '../../../../common/widgets/custom_text_field.dart';
 import '../../../../common/widgets/my_text.dart';
 import '../../../../common/widgets/primary_button.dart';
@@ -10,11 +10,8 @@ import '../../../../common/widgets/social_button_widget.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/auth_controller.dart';
 
-class SigninView extends GetView<AuthController> {
+class SigninView extends GetView<SigninController> {
   SigninView({super.key});
-
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +56,8 @@ class SigninView extends GetView<AuthController> {
 
                 CustomTextField(
                   label: 'Email',
-                  hintText: 'olivia@untitledui.com',
-                  controller: emailController,
+                  hintText: 'abc@example.com',
+                  controller: controller.emailController,
                 ),
 
                 10.sbh,
@@ -68,40 +65,26 @@ class SigninView extends GetView<AuthController> {
                 CustomTextField(
                   label: 'Password',
                   hintText: 'Password',
-                  controller: passwordController,
+                  controller: controller.passwordController,
                   obscureText: true,
                 ),
 
                 24.sbh,
 
-                PrimaryButton(
-                  color: R.theme.primary,
-                  text: 'Log in',
-                  onPressed: () {
-                    Get.offAllNamed(Routes.MAIN);
-                  },
-                ),
-
-                10.sbh,
-
-                Padding(
-                  padding: 8.horizontal,
-                  child: MyText(
-                    text: 'Or',
-                    fontSize: 14,
-                    opacity: 0.4,
-                    fontWeight: FontWeight.bold,
+                Obx(()=> PrimaryButton(
+                    color: R.theme.primary,
+                    text: 'Log in',
+                    disabled: !controller.isLoginButtonEnabled.value,
+                    onPressed: () {
+                      if (controller.isLoginButtonEnabled.value) {
+                        var data = {
+                          'email': controller.emailController.text,
+                          'password': controller.passwordController.text,
+                        };
+                        controller.authController.postApi(data, ApisUrl.login);
+                      }
+                    },
                   ),
-                ),
-
-                10.sbh,
-
-                SocialButton(
-                  icon: 'assets/icons/ic_google.svg',
-                  text: 'Continue with Google',
-                  backgroundColor: R.theme.secondary,
-                  textColor: R.theme.textColor,
-                  borderColor: R.theme.transparent,
                 ),
 
                 24.sbh,
@@ -130,8 +113,15 @@ class SigninView extends GetView<AuthController> {
             14.sbw,
 
             GestureDetector(
-              onTap: () {
-                Get.toNamed(Routes.SIGNUP);
+              onTap: () async {
+                // 1. Close keyboard and remove focus
+                Get.focusScope?.unfocus();
+
+                // 2. Small delay to allow the keyboard to close and focus to detach
+                await Future.delayed(const Duration(milliseconds: 300));
+
+                // 3. Now navigate
+                Get.offAllNamed(Routes.SIGNUP);
               },
               child: MyText(
                 text: 'Sign up',

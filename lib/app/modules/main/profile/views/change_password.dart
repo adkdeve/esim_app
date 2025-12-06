@@ -76,7 +76,19 @@ class ChangePasswordView extends GetView<ProfileController> {
         minimum: const EdgeInsets.all(20),
         child: SizedBox(
           height: 56,
-          child: PrimaryButton(color: R.theme.primary, text: 'Save', onPressed: () => {}),
+          child: PrimaryButton(
+              color: R.theme.primary,
+              text: 'Save',
+              onPressed: ()  {
+                var data = {
+                  "email": "alee0066.aka@gmail.com",
+                  "old_password": currentPasswordController.text,
+                  "new_password": newPasswordController.text,
+                  "confirm_password": confirmPasswordController.text,
+                };
+                controller.mainController.postApi(data, ApisUrl.changePassword);
+
+              }),
         ),
       ),
     );

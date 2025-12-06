@@ -15,97 +15,98 @@ class FinalOnboarding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarIconBrightness: Brightness.light,
-    ));
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        body: Stack(
+          children: [
 
-    return Scaffold(
-      body: Stack(
-        children: [
-
-          Positioned.fill(
-            child: SvgPicture.asset(
-              "assets/images/background.svg",
-              fit: BoxFit.cover,
-              alignment: Alignment.bottomCenter,
-              allowDrawingOutsideViewBox: true,
-            ),
-          ),
-
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Center(
+            Positioned.fill(
               child: SvgPicture.asset(
-                "assets/images/header_background.svg",
-                width: 912,
-                alignment: Alignment.bottomCenter,
+                "assets/images/background.svg",
                 fit: BoxFit.cover,
+                alignment: Alignment.bottomCenter,
+                allowDrawingOutsideViewBox: true,
               ),
             ),
-          ),
 
-          SafeArea(
-            child: Padding(
-              padding: 24.all,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(width: 182, height: 62,
-                      child: Image.asset('assets/images/logo.png')),
-                  35.sbh,
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      style: TextStyle(fontSize: 27, fontWeight: FontWeight.w700, height: 1.4),
-                      children: [
-                        TextSpan(text: "Welcome to the ", style: TextStyle(color: Colors.white)),
-                        TextSpan(text: "best\n", style: TextStyle(color: Color(0xFFB87333))),
-                        TextSpan(text: "travel eSIM", style: TextStyle(color: Color(0xFFB87333))),
-                      ],
-                    ),
-                  ),
-                  52.sbh,
-                  Padding(
-                    padding: const EdgeInsets.only(left: 60),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(text: "Unlimited data plans.", fontSize: 18, height: 1.96),
-                        12.sbh,
-                        MyText(text: "Reliable internet up to 5G speed.", fontSize: 18, height: 1.96),
-                        12.sbh,
-                        MyText(text: "Data Sharing.", fontSize: 18, height: 1.96),
-                        12.sbh,
-                        MyText(text: "24/7 support.", fontSize: 18, height: 1.96),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CtaCard(
-                          title: 'Already got an eSIM',
-                          onTap: () => Get.offAllNamed(Routes.SIGNIN),
-                        ),
-                      ),
-                      16.sbw,
-                      Expanded(
-                        child: CtaCard(
-                          title: 'Buy an eSIM',
-                          outlined: true,
-                          onTap: () => Get.offAllNamed(Routes.SIGNUP),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: SvgPicture.asset(
+                  "assets/images/header_background.svg",
+                  width: 912,
+                  alignment: Alignment.bottomCenter,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-        ],
+
+            SafeArea(
+              child: Padding(
+                padding: 24.all,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 182, height: 62,
+                        child: Image.asset('assets/images/logo.png')),
+                    35.sbh,
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: const TextSpan(
+                        style: TextStyle(fontSize: 27, fontWeight: FontWeight.w700, height: 1.4),
+                        children: [
+                          TextSpan(text: "Welcome to the ", style: TextStyle(color: Colors.white)),
+                          TextSpan(text: "best\n", style: TextStyle(color: Color(0xFFB87333))),
+                          TextSpan(text: "travel eSIM", style: TextStyle(color: Color(0xFFB87333))),
+                        ],
+                      ),
+                    ),
+                    52.sbh,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 60),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText(text: "Unlimited data plans.", fontSize: 18, height: 1.96),
+                          12.sbh,
+                          MyText(text: "Reliable internet up to 5G speed.", fontSize: 18, height: 1.96),
+                          12.sbh,
+                          MyText(text: "Data Sharing.", fontSize: 18, height: 1.96),
+                          12.sbh,
+                          MyText(text: "24/7 support.", fontSize: 18, height: 1.96),
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CtaCard(
+                            title: 'Already got an eSIM',
+                            onTap: () => Get.offAllNamed(Routes.SIGNIN),
+                          ),
+                        ),
+                        16.sbw,
+                        Expanded(
+                          child: CtaCard(
+                            title: 'Buy an eSIM',
+                            outlined: true,
+                            onTap: () => Get.offAllNamed(Routes.SIGNUP),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

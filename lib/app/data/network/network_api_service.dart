@@ -17,10 +17,38 @@ class NetworkApiService extends BaseApiServices {
     try {
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult != ConnectivityResult.none) {
-        var response = await http.post(Uri.parse(url), body: data).timeout(
+        var response = await http.post(
+            Uri.parse(url), body: data).timeout(
               const Duration(seconds: 15),
             );
-        if (response.statusCode == 200) {
+        if (response.statusCode == 200 || response.statusCode == 401) {
+          // var data = Encryption.instance.decrypt(response.body.toString());
+          // print(data);
+          return response.body;
+        }
+      } else {
+        internetConnectivityAlterDialog();
+        return null;
+      }
+    } on SocketException {
+      throw 'Something went wrong';
+    }
+  }
+
+  @override
+  Future postApiResponseWithHeader(data, String url) async {
+    try {
+      final connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult != ConnectivityResult.none) {
+        var response = await http.post(
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            Uri.parse(url), body: data).timeout(
+              const Duration(seconds: 15),
+            );
+        if (response.statusCode == 200 || response.statusCode == 401) {
           // var data = Encryption.instance.decrypt(response.body.toString());
           // print(data);
           return response.body;

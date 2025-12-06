@@ -6,10 +6,12 @@ import '../../../../../common/widgets/circle_item.dart';
 import '../../../../../common/widgets/custom_country_card.dart';
 import '../../../../../common/widgets/my_text.dart';
 import '../../../../core/core.dart';
+import '../../card_details/bindings/card_details_binding.dart';
 import '../../card_details/controllers/card_details_controller.dart';
 import '../../card_details/views/card_details_view.dart';
 import '../../controllers/main_controller.dart';
 import '../controllers/home_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeView extends GetView<HomeController> {
 
@@ -17,70 +19,71 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle.light.copyWith(
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(
         statusBarIconBrightness: Brightness.light,
       ),
-    );
-
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: SvgPicture.asset(
-                  "assets/images/background.svg",
-                  fit: BoxFit.fill,
-                  alignment: Alignment.bottomCenter,
-                  allowDrawingOutsideViewBox: true,
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: SvgPicture.asset(
+                    "assets/images/background.svg",
+                    fit: BoxFit.fill,
+                    alignment: Alignment.bottomCenter,
+                    allowDrawingOutsideViewBox: true,
+                  ),
                 ),
-              ),
 
-              NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverToBoxAdapter(child: _buildHeaderSection(context)),
-                  SliverToBoxAdapter(child: _buildCountrySection(context)),
-                  SliverToBoxAdapter(child: 20.sbh),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: 20.horizontal,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: R.theme.secondary,
-                          borderRadius: 30.radius,
-                        ),
-                        child: TabBar(
-                          indicator: BoxDecoration(
-                            color: R.theme.primary,
+                NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverToBoxAdapter(child: _buildHeaderSection(context)),
+                    SliverToBoxAdapter(child: 20.sbh),
+                    SliverToBoxAdapter(child: _buildCountrySection(context)),
+                    SliverToBoxAdapter(child: 20.sbh),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: 20.horizontal,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: R.theme.secondary,
                             borderRadius: 30.radius,
                           ),
-                          labelColor: R.theme.white,
-                          unselectedLabelColor: R.theme.white,
-                          indicatorPadding: 5.all,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          dividerColor: R.theme.transparent,
-                          tabs: [
-                            Tab(text: 'Countries'),
-                            Tab(text: 'Regional plan'),
-                          ],
+                          child: TabBar(
+                            indicator: BoxDecoration(
+                              color: R.theme.primary,
+                              borderRadius: 30.radius,
+                            ),
+                            labelColor: R.theme.white,
+                            unselectedLabelColor: R.theme.white,
+                            indicatorPadding: 5.all,
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            dividerColor: R.theme.transparent,
+                            tabs: [
+                              Tab(text: 'Countries'),
+                              Tab(text: 'Regional plan'),
+                            ],
+                          ),
                         ),
                       ),
                     ),
+                  ],
+                  body: Padding(
+                    padding: const EdgeInsets.only(top: 22.0),
+                    child: TabBarView(
+                      children: [
+                        CountriesTabWidget(),
+                        RegionalPlanTabWidget(),
+                      ],
+                    )
                   ),
-                ],
-                body: Padding(
-                  padding: const EdgeInsets.only(top: 22.0),
-                  child: TabBarView(
-                    children: [
-                      CountriesTabWidget(),
-                      RegionalPlanTabWidget(),
-                    ],
-                  )
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -100,7 +103,7 @@ class HomeView extends GetView<HomeController> {
 
         Container(
           padding: EdgeInsets.only(top: 16, right: 16),
-        child: Column(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
@@ -113,9 +116,16 @@ class HomeView extends GetView<HomeController> {
                 Spacer(),
 
                 GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      final Uri url = Uri.parse('https://wilixifysoft.com/conat-us/');
+
+                      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                        throw Exception('Could not launch $url');
+                      }
                     },
-                    child: SvgPicture.asset('assets/icons/ic_help_support.svg',)
+                    child: SvgPicture.asset(
+                      'assets/icons/ic_help_support.svg',
+                    )
                 ),
 
               ],
@@ -186,10 +196,9 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
 
-            23.sbh,
           ],
         ),
-      ),
+        ),
       ]
     );
   }
@@ -204,201 +213,128 @@ class HomeView extends GetView<HomeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           MyText(
-            text: 'Popular',
+            text: 'Popular Destinations', // Updated title
             color: R.theme.white,
             fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
-
           10.sbh,
-
           SizedBox(
             height: 70,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: controller.popular.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 0),
-              itemBuilder: (_, i) {
-                final name = controller.popular[i]['name']!;
-                final asset = controller.popular[i]['asset']!;
-                return GestureDetector(
-                    onTap: () {
-                      Get.to(
-                        GetBuilder<CardDetailsController>(
-                          init: CardDetailsController(),
-                          builder: (_) => CardDetailsView(countryName: name, imageUrl: asset),
-                        ),
-                      );
-                    },
-                    child: CircleItem(
-                        name: name, imageUrl: asset, imageSize: 47, textSize: 12
-                    )
-                );
-              },
-            ),
+            child: Obx(() {
+
+              var popularList = controller.countryCategories.take(6).toList();
+
+              return ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: popularList.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 15),
+                itemBuilder: (_, i) {
+                  final category = popularList[i];
+
+                  return GestureDetector(
+                      onTap: () {
+                        Get.to(
+                              () => const CardDetailsView(),
+                          binding: CardDetailsBinding(),
+                          arguments: {
+                            'countryName': category.name,
+                            'imageUrl': category.image,
+                            'products': category,
+                          },
+                        );
+                      },
+                      child: CircleItem(
+                          name: category.name, imageUrl: category.image, imageSize: 45, textSize: 12
+                      )
+                  );
+                },
+              );
+            }),
           ),
         ],
       ),
     );
   }
-
 }
 
-class CountriesTabWidget extends StatelessWidget {
+class CountriesTabWidget extends GetView<HomeController> {
   const CountriesTabWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      crossAxisSpacing: 0,
-      mainAxisSpacing: 2,
-      childAspectRatio: 1.5,
-      children: [
-        CustomCard(countryName: 'Qatar', imageUrl: 'https://flagcdn.com/w320/qa.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Qatar', imageUrl: 'https://flagcdn.com/w320/qa.png'),
-            ),
+    return Obx(() {
+      return GridView.builder(
+        padding: EdgeInsets.all(16),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.5,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: controller.countryCategories.length,
+        itemBuilder: (context, index) {
+          final country = controller.countryCategories[index];
+          return CustomCard(
+            countryName: country.name,
+            imageUrl: country.image,
+            imageSize: 35,
+            textSize: 14,
+            onTap: () {
+              Get.to(
+                    () => const CardDetailsView(),
+                binding: CardDetailsBinding(),
+                arguments: {
+                  'countryName': country.name,
+                  'imageUrl': country.image,
+                  'products': country,
+                },
+              );
+            },
           );
-        }),
-        CustomCard(countryName: 'China', imageUrl: 'https://flagcdn.com/w320/cn.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'China', imageUrl: 'https://flagcdn.com/w320/cn.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Cuba', imageUrl: 'https://flagcdn.com/w320/cu.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Cuba', imageUrl: 'https://flagcdn.com/w320/cu.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Egypt', imageUrl: 'https://flagcdn.com/w320/eg.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Egypt', imageUrl: 'https://flagcdn.com/w320/eg.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Israel', imageUrl: 'https://flagcdn.com/w320/il.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Israel', imageUrl: 'https://flagcdn.com/w320/il.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'England', imageUrl: 'https://flagcdn.com/w320/gb.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'England', imageUrl: 'https://flagcdn.com/w320/gb.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Poland', imageUrl: 'https://flagcdn.com/w320/pl.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Poland', imageUrl: 'https://flagcdn.com/w320/pl.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Switzerland', imageUrl: 'https://flagcdn.com/w320/ch.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Switzerland', imageUrl: 'https://flagcdn.com/w320/ch.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'New Zealand', imageUrl: 'https://flagcdn.com/w320/nz.png', imageSize: 50, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'New Zealand', imageUrl: 'https://flagcdn.com/w320/nz.png'),
-            ),
-          );
-        }),
-      ],
-    );
+        },
+      );
+    });
   }
 }
 
-class RegionalPlanTabWidget extends StatelessWidget {
+class RegionalPlanTabWidget extends GetView<HomeController> {
   const RegionalPlanTabWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      crossAxisSpacing: 8,
-      mainAxisSpacing: 8,
-      childAspectRatio: 1.5,
-      children: [
-        CustomCard(countryName: 'Global', imageUrl: 'assets/images/ic_global.png', imageSize: 48, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Global', imageUrl: 'assets/images/ic_global.png'),
-            ),
+    return Obx(() {
+      return GridView.builder(
+        padding: EdgeInsets.all(16),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.5,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: controller.regionalCategories.length,
+        itemBuilder: (context, index) {
+          final region = controller.regionalCategories[index];
+          return CustomCard(
+            countryName: region.name,
+            imageUrl: region.image,
+            imageSize: 35,
+            textSize: 14,
+            onTap: () {
+              Get.to(
+                    () => const CardDetailsView(),
+                binding: CardDetailsBinding(),
+                arguments: {
+                  'countryName': region.name,
+                  'imageUrl': region.image,
+                  'products': region,
+                },
+              );
+            },
           );
-        }),
-        CustomCard(countryName: 'Europe', imageUrl: 'assets/images/ic_europe.png', imageSize: 48, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Europe', imageUrl: 'assets/images/ic_europe.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Australia', imageUrl: 'assets/images/ic_australia.png', imageSize: 48, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Australia', imageUrl: 'assets/images/ic_australia.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Latin America', imageUrl: 'assets/images/ic_america.png', imageSize: 48, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Latin America', imageUrl: 'assets/images/ic_america.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Africa', imageUrl: 'assets/images/ic_africa.png', imageSize: 48, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Africa', imageUrl: 'assets/images/ic_africa.png'),
-            ),
-          );
-        }),
-        CustomCard(countryName: 'Asia', imageUrl: 'assets/images/ic_asia.png', imageSize: 48, textSize: 14, onTap: () {
-          Get.to(
-            GetBuilder<CardDetailsController>(
-              init: CardDetailsController(),
-              builder: (_) => CardDetailsView(countryName: 'Asia', imageUrl: 'assets/images/ic_asia.png'),
-            ),
-          );
-        }),
-
-      ],
-    );
+        },
+      );
+    });
   }
 }

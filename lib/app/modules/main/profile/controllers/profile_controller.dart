@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcom_app/app/modules/main/controllers/main_controller.dart';
 
 class ProfileController extends GetxController {
   final name = TextEditingController();
@@ -7,6 +8,24 @@ class ProfileController extends GetxController {
   final phone = TextEditingController();
   final birth = TextEditingController();
   final birthdayController = TextEditingController();
+
+
+  late MainController mainController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    // 2. Initialize it here
+    mainController = Get.find<MainController>();
+  }
+
+  // Contact Us
+  final contactName = TextEditingController();
+  final contactlastName = TextEditingController();
+  final contactEmail = TextEditingController();
+  final contactSubject = TextEditingController();
+  final contactMessage = TextEditingController();
+
 
   DateTime? selectedDate;
 
@@ -18,6 +37,7 @@ class ProfileController extends GetxController {
   ];
 
   String selectedCountry = '🇬🇧 +44';
+
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -50,6 +70,7 @@ class ProfileController extends GetxController {
       birthdayController.text = "${picked.day}/${picked.month}/${picked.year}";
     }
   }
+
 
   @override
   void dispose() {

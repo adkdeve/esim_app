@@ -33,7 +33,25 @@ class FaqView extends StatelessWidget {
                   children: [
 
                     const FaqsItems(
-                      question: 'What is Rise Real Estate?',
+                      question: 'What is an eSIM and how can you benefit from Wilixify?',
+                      answer:
+                      '',
+                    ),
+
+                    const FaqsItems(
+                      question: 'Why choose buy in Rise?',
+                      answer:
+                      '"You can add a friend either by searching their name in the search bar or by letting them sharing their profile for you from the profile page on yapo."',
+                    ),
+
+                    const FaqsItems(
+                      question: 'What is Safar?',
+                      answer:
+                      '"You can add a friend either by searching their name in the search bar or by letting them sharing their profile for you from the profile page on yapo."',
+                    ),
+
+                    const FaqsItems(
+                      question: 'What is an eSIM and how can you benefit from Wilixify?',
                       answer:
                       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut. aliquip ex ea commodo consequat. Duis aute irure dolor.',
                     ),

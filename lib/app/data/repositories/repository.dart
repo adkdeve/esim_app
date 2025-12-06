@@ -12,6 +12,15 @@ class Repository {
     }
   }
 
+  Future<dynamic> postApiWithHeader(dynamic data, String url) async {
+    try {
+      dynamic response = await _apiServices.postApiResponseWithHeader(data, url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> postApiWithToken(data, String url, String token) async {
     try {
       dynamic response =

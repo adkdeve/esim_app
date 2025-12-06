@@ -10,7 +10,8 @@ class AppConfig {
   static ThemeMode appDefaultTheme = ThemeMode.light;
 
   // ───── API Config ─────
-  static const String baseUrl = 'https://api.myawesomeapp.com/';
+  static const String baseUrl = 'https://wilixifysoft.com/wp-json/esim/v1/';
+  static const String mayaBaseUrl = 'https://api.maya.net/connectivity/v1/';
   static const String imageBaseUser = '${baseUrl}storage/';
 
   static const Duration apiTimeout = Duration(seconds: 30);

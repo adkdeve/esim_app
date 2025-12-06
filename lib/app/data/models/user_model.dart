@@ -6,14 +6,14 @@ class UserModel {
   UserModel({required this.id, required this.name, required this.email});
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        id: json['id'],
-        name: json['name'],
-        email: json['email'],
-      );
+    id: json['user_id']?.toString() ?? '',
+    name: json['user_login'],
+    email: json['user_email'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'email': email,
-      };
+    'user_id': id,
+    'user_login': name,
+    'user_email': email,
+  };
 }
