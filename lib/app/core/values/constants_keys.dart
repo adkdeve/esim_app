@@ -2,6 +2,7 @@ class MyConstants {
   static String token = 'TOKEN';
   static String userData = 'user_data';
   static String passwordKey = 'password_key';
+  static String skipKey = 'skip_key';
   // static String userId = 'user_id';
 
   // static String userFirstName = 'first_name';

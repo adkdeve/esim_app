@@ -49,16 +49,6 @@ class SignupController extends GetxController {
     passwordController.addListener(_listener);
   }
 
-  @override
-  void onClose() {
-    emailController.removeListener(_listener);
-    passwordController.removeListener(_listener);
-    super.onClose();
-  }
-
-  // ------------------------------
-  //     PASSWORD VALIDATION
-  // ------------------------------
   void checkPasswordStrength(String value) {
     hasPasswordText.value = value.isNotEmpty;
     isLengthValid.value = value.length >= 8;
@@ -67,9 +57,6 @@ class SignupController extends GetxController {
     hasSpecial.value = value.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'));
   }
 
-  // ------------------------------
-  //   UPDATE SIGNUP BUTTON STATE
-  // ------------------------------
   void _updateSignupButtonState() {
     final emailValid = emailController.text.isEmailAddress;
 
@@ -81,40 +68,13 @@ class SignupController extends GetxController {
             hasSpecial.value;
   }
 
-  // ------------------------------
-  //         SIGN UP API
-  // ------------------------------
-  Future<void> signup() async {
-    final data = {
-      "email": emailController.text.trim(),
-      "password": passwordController.text.trim(),
-    };
-
-    loading.showEasyLoading("Creating account...");
-    _repo.postApi(data, ApisUrl.signUp).then((value) async {
-      loading.dismissEasyLoading();
-
-      if (value == null) {
-        SnackBarUtils.errorMsg("Empty server response");
-        return;
-      }
-
-      try {
-        final response = json.decode(value);
-
-        if (response["success"] == true) {
-          SnackBarUtils.successMsg("Account created successfully");
-          Get.toNamed(Routes.SIGNIN);
-        } else {
-          SnackBarUtils.errorMsg(response["message"]);
-        }
-      } catch (e) {
-        logger.e(e);
-        SnackBarUtils.errorMsg("Invalid server response");
-      }
-    }).onError((error, _) {
-      loading.dismissEasyLoading();
-      SnackBarUtils.errorMsg(error.toString());
-    });
+  @override
+  void onClose() {
+    emailController.removeListener(_listener);
+    passwordController.removeListener(_listener);
+    super.onClose();
   }
+
+
+
 }

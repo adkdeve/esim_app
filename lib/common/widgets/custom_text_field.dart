@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pcom_app/app/core/core.dart';
 import 'my_text.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String label;
   final String hintText;
   final Color borderClr;
@@ -19,21 +19,26 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MyText(
-          text: label,
+          text: widget.label,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
         8.sbh,
         TextFormField(
-          controller: controller,
-          obscureText: obscureText,
+          controller: widget.controller,
+          obscureText: widget.obscureText,
           decoration: InputDecoration(
-            hintText: hintText,
+            hintText: widget.hintText,
             filled: true,
             fillColor: R.theme.transparent,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -42,7 +47,7 @@ class CustomTextField extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: 8.radius,
-              borderSide: BorderSide(color: borderClr),
+              borderSide: BorderSide(color: widget.borderClr),
             ),
           ),
         ),

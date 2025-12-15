@@ -9,6 +9,7 @@ class AuthService {
   static final String _userKey = MyConstants.userData;
   static final String _passwordKey = MyConstants.passwordKey;
   static final String _tokenKey = MyConstants.token;
+  static final String _skipKey = MyConstants.skipKey;
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -18,6 +19,15 @@ class AuthService {
     await _storage.write(key: _userKey, value: userJson);
     await _storage.write(key: _passwordKey, value: password);
     await _storage.write(key: _tokenKey, value: token);
+  }
+  /// Save skip info
+  Future<void> saveSkip(String skip) async {
+    await _storage.write(key: _skipKey, value: skip);
+  }
+
+  /// Get skip
+  Future<String?> getToken() async {
+    return await _storage.read(key: _tokenKey);
   }
 
   /// Get user data as Map
@@ -31,8 +41,8 @@ class AuthService {
   }
 
   /// Get auth token
-  Future<String?> getToken() async {
-    return await _storage.read(key: _tokenKey);
+  Future<String?> getSkip() async {
+    return await _storage.read(key: _skipKey);
   }
 
   /// Get auth token
@@ -44,6 +54,10 @@ class AuthService {
   Future<bool> isLoggedIn() async {
     final token = await getToken();
     return token != null;
+  }
+
+  Future<void> deleteSkip() async {
+    return await _storage.delete(key: _skipKey);
   }
 
   /// Logout user (clear secure storage)

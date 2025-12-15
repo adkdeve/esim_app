@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcom_app/app/data/services/auth_service.dart';
 
 class OnboardingController extends GetxController {
   final PageController pageController = PageController();
   var currentPage = 0.obs;
+
+  AuthService _authService = AuthService();
+
+  Future<void> saveSkip() async {
+    await _authService.saveSkip('true');
+  }
 
   final List<Map<String, dynamic>> onboardingData = [
     {
@@ -55,6 +62,5 @@ class OnboardingController extends GetxController {
       'image': 'assets/images/img_onboarding3.png',
     },
   ];
-
 
 }

@@ -6,81 +6,104 @@ import 'package:pcom_app/app/core/core.dart';
 import 'package:pcom_app/common/widgets/build_image.dart';
 import 'package:pcom_app/common/widgets/my_text.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../../../../../common/widgets/login_required_view.dart';
 import '../../../../../common/widgets/smooth_rectangle_border.dart';
+import '../../../../../utils/helpers/snackbar.dart';
+import '../../../../routes/app_pages.dart';
+import '../../guide/views/install_esim.dart';
 import '../controllers/my_esim_controller.dart';
 
-class MyEsimView extends GetView<MyEsimController> {
+class MyEsimView extends GetView<MyEsimController>  {
   const MyEsimView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Obx(() {
+        if (controller.mainController.isGuest.value) {
+          return LoginRequiredView(
+            bodyText: "Please login first to view and manage your eSIMs.",
+            onLoginPressed: () {
+              // Handle Navigation Logic Here
+              Get.offAllNamed(Routes.SIGNIN);
+            },
+          );
+        }
+
+        return _buildAuthenticatedContent(context);
+      }),
+    );
+  }
+
+  Widget _buildAuthenticatedContent(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        body: SafeArea(
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverToBoxAdapter(child: _buildHeaderSection(context)),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 18, right: 18),
-                  child: Column(
-                    children: [
-                      esimCard(context),
-                      esimGuideCard(),
-                      20.sbh,
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 17.5,
-                            backgroundColor: Color(0xFFD8D8D8),
-                          ),
-                          12.sbw,
-                          Obx(()
-                            => MyText(
-                              text: controller.esimName.value + ' Plans',
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      16.sbh,
-                      Padding(
-                        padding: 10.horizontal,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: R.theme.secondary,
+      child: SafeArea(
+        child: NestedScrollView(
+          physics: const ClampingScrollPhysics(),
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverToBoxAdapter(child: SizedBox(
+              height: 100,
+                child: _buildHeaderSection(context))),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(left: 18, right: 18),
+                child: Column(
+                  children: [
+                    esimCard(context),
+                    esimGuideCard(),
+                    20.sbh,
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 17.5,
+                          backgroundColor: Color(0xFFD8D8D8),
+                        ),
+                        12.sbw,
+                        Obx(()
+                        => MyText(
+                          text: controller.mainController.user?.displayName ?? 'User',
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        ),
+                      ],
+                    ),
+                    16.sbh,
+                    Padding(
+                      padding: 10.horizontal,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: R.theme.secondary,
+                          borderRadius: 30.radius,
+                        ),
+                        child: TabBar(
+                          indicator: BoxDecoration(
+                            color: R.theme.primary,
                             borderRadius: 30.radius,
                           ),
-                          child: TabBar(
-                            indicator: BoxDecoration(
-                              color: R.theme.primary,
-                              borderRadius: 30.radius,
-                            ),
-                            labelColor: R.theme.white,
-                            unselectedLabelColor: R.theme.white,
-                            indicatorPadding: 5.all,
-                            indicatorSize: TabBarIndicatorSize.tab,
-                            dividerColor: R.theme.transparent,
-                            tabs: [
-                              Tab(text: 'Current Plans'),
-                              Tab(text: 'Achieved Plans'),
-                            ],
-                          ),
+                          labelColor: R.theme.white,
+                          unselectedLabelColor: R.theme.white,
+                          indicatorPadding: 5.all,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          dividerColor: R.theme.transparent,
+                          tabs: [
+                            Tab(text: 'Current Plans'),
+                            Tab(text: 'Achieved Plans'),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-            body: TabBarView(
-              children: [
-                CurrentPlanTabWidget(controller: controller),
-                AchievedPlanTabWidget(controller: controller),
-              ],
             ),
+          ],
+          body: TabBarView(
+            children: [
+              CurrentPlanTabWidget(controller: controller),
+              AchievedPlanTabWidget(controller: controller),
+            ],
           ),
         ),
       ),
@@ -99,68 +122,6 @@ class MyEsimView extends GetView<MyEsimController> {
           ),
         ),
 
-        Padding(
-          padding: 26.all,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 12,
-                child: Icon(
-                  Icons.person,
-                  color: R.theme.primary,
-                  size: 20,
-                ),
-              ),
-
-              8.sbw,
-
-              MyText(
-                text: "Sign In",
-                color: R.theme.white,
-                fontSize: 12
-              ),
-
-              Spacer(),
-
-              SizedBox(
-                width: 100,
-                height: 30,
-                child: ElevatedButton.icon(
-                  icon: SvgPicture.asset(
-                    'assets/icons/ic_add.svg',
-                    height: 14,
-                    width: 14,
-                    fit: BoxFit.fill,
-                    color: R.theme.white,
-                  ),
-                  label: MyText(
-                    text: 'New eSIM',
-                    fontSize: 12,
-                    height: 0.66,
-                    fontWeight: FontWeight.w600,
-                    color: R.theme.white,
-                  ),
-                  onPressed: ()=>{
-
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: 8.all,
-                    shadowColor: R.theme.transparent,
-                    surfaceTintColor: R.theme.transparent,
-                    backgroundColor: R.theme.primary,
-                    shape: SmoothRectangleBorder(
-                      smoothness: 1,
-                      borderRadius: 30.radius,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ]
     );
   }
@@ -198,7 +159,7 @@ class MyEsimView extends GetView<MyEsimController> {
                         10.sbw,
 
                         Obx(() => MyText(
-                          text: controller.esimName.value,
+                          text: controller.mainController.user?.displayName ?? 'User',
                           overflow: TextOverflow.ellipsis,
                           color: R.theme.white,
                           softWrap: true,
@@ -211,7 +172,7 @@ class MyEsimView extends GetView<MyEsimController> {
                         InkWell(
                           onTap: () {
                             final TextEditingController nameController =
-                            TextEditingController(text: controller.esimName.value);
+                            TextEditingController(text: controller.mainController.user?.displayName);
 
                             showDialog(
                               context: context,
@@ -241,7 +202,7 @@ class MyEsimView extends GetView<MyEsimController> {
                                     ElevatedButton(
                                       onPressed: () {
                                         if (nameController.text.trim().isNotEmpty) {
-                                          controller.esimName.value = nameController.text.trim();
+                                          controller.mainController.user?.displayName = nameController.text.trim();
                                         }
                                         Navigator.pop(context);
                                       },
@@ -289,11 +250,13 @@ class MyEsimView extends GetView<MyEsimController> {
 
                                 2.sbh,
 
-                                MyText(
-                                  text: controller.iccid,
-                                  color: R.theme.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
+                                Obx(() =>
+                                    MyText(
+                                      text: controller.iccid.value,
+                                      color: R.theme.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                 ),
                               ],
                             ),
@@ -302,7 +265,7 @@ class MyEsimView extends GetView<MyEsimController> {
                           InkWell(
                             onTap: () async {
                               await Clipboard.setData(
-                                  ClipboardData(text: controller.iccid));
+                                  ClipboardData(text: controller.iccid.value));
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('${controller.iccid} copied')),
                               );
@@ -318,11 +281,13 @@ class MyEsimView extends GetView<MyEsimController> {
 
               12.sbw,
 
-              QrImageView(
-                data: controller.iccid,
-                version: QrVersions.auto,
-                size: 75,
-                foregroundColor: R.theme.white,
+              Obx(() =>
+                  QrImageView(
+                    data: controller.iccid.value,
+                    version: QrVersions.auto,
+                    size: 75,
+                    foregroundColor: R.theme.white,
+                  ),
               ),
 
             ],
@@ -333,10 +298,15 @@ class MyEsimView extends GetView<MyEsimController> {
           Row(
             children: [
 
-              const _ActionTile(
-                icon: 'assets/icons/ic_manual_transmission.svg',
-                size: 22,
-                label: 'Manual Install',
+              GestureDetector(
+                onTap: () => {
+                  Get.to(InstallEsim())
+                },
+                child: const _ActionTile(
+                  icon: 'assets/icons/ic_manual_transmission.svg',
+                  size: 22,
+                  label: 'Manual Install',
+                ),
               ),
 
               const _VerticalSep(),
@@ -348,7 +318,9 @@ class MyEsimView extends GetView<MyEsimController> {
                     width: 62,
                     height: 30,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.mainController.selectedIndex.value = 0;
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: R.theme.white,
                         shape: const StadiumBorder(),
@@ -372,11 +344,18 @@ class MyEsimView extends GetView<MyEsimController> {
 
               const _VerticalSep(),
 
-              const _ActionTile(
-                icon: 'assets/icons/ic_share.svg',
-                size: 22,
-                label: 'Share QR Code',
-              ),
+              GestureDetector(
+                onTap: () {
+                  // Copy link to clipboard and notify user
+                  Clipboard.setData(ClipboardData(text: controller.qrCodeLink.value));
+                  SnackBarUtils.successMsg("QR Code link copied to clipboard!");
+                },
+                child: const _ActionTile(
+                  icon: 'assets/icons/ic_share.svg',
+                  size: 22,
+                  label: 'Share QR Code',
+                ),
+              )
 
             ],
           ),
@@ -386,15 +365,19 @@ class MyEsimView extends GetView<MyEsimController> {
   }
 
   Widget esimGuideCard() {
-    return Container(
-      margin: const EdgeInsets.only(top: 12),
-      decoration: BoxDecoration(
-        color: R.theme.secondary,
-        borderRadius: 8.radius,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      child: Row
-        (
+    return GestureDetector(
+      onTap: () {
+        controller.mainController.selectedIndex.value = 2;
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 12),
+        decoration: BoxDecoration(
+          color: R.theme.secondary,
+          borderRadius: 8.radius,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: Row
+          (
           children: [
 
             SvgPicture.asset('assets/icons/ic_play_button.svg'),
@@ -403,9 +386,9 @@ class MyEsimView extends GetView<MyEsimController> {
 
             MyText(
               text: "Play eSim Installation Guide",
-                color: R.theme.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+              color: R.theme.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
             ),
 
             Spacer(),
@@ -417,23 +400,46 @@ class MyEsimView extends GetView<MyEsimController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildEmptyState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.network_check, size: 60, color: Colors.grey.withOpacity(0.5)),
+          const SizedBox(height: 16),
+          MyText(
+            text: message,
+            color: Colors.grey,
+            fontSize: 14,
+          ),
+        ],
+      ),
     );
   }
 
 }
 
 class CurrentPlanTabWidget extends StatelessWidget {
-  CurrentPlanTabWidget({super.key, required this.controller});
+  const CurrentPlanTabWidget({super.key, required this.controller});
 
-  final controller;
+  final MyEsimController controller;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 4),
-      child: ListView.separated(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
+    return Obx(() {
+      // 1. Check if the list is empty
+      if (controller.currentPlans.isEmpty) {
+        // Calling the empty state method from the View
+        return const MyEsimView().buildEmptyState("You have no current eSIM plans.");
+      }
+
+      // 2. Display the list if data exists
+      return ListView.separated(
+        padding: const EdgeInsets.all(16),
         itemCount: controller.currentPlans.length,
         separatorBuilder: (_, __) => 16.sbh,
         itemBuilder: (context, index) {
@@ -446,27 +452,29 @@ class CurrentPlanTabWidget extends StatelessWidget {
             usedGb: plan['usedGb'],
             flagImage: plan['flagImage'],
             active: plan['active'],
-            onFuelUp: () {
-            },
           );
         },
-      ),
-    );
+      );
+    });
   }
 }
 
 class AchievedPlanTabWidget extends StatelessWidget {
-  AchievedPlanTabWidget({super.key, required this.controller});
+  const AchievedPlanTabWidget({super.key, required this.controller});
 
-  final controller;
+  final MyEsimController controller;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 4),
-      child: ListView.separated(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
+    return Obx(() {
+      // 1. Check if the list is empty
+      if (controller.achievedPlans.isEmpty) {
+        return const MyEsimView().buildEmptyState("You haven't achieved any plans yet.");
+      }
+
+      // 2. Display the list if data exists
+      return ListView.separated(
+        padding: const EdgeInsets.all(16),
         itemCount: controller.achievedPlans.length,
         separatorBuilder: (_, __) => 16.sbh,
         itemBuilder: (context, index) {
@@ -482,8 +490,8 @@ class AchievedPlanTabWidget extends StatelessWidget {
             onFuelUp: () {},
           );
         },
-      ),
-    );
+      );
+    });
   }
 }
 
@@ -495,32 +503,30 @@ class _ActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
+    return Column(
+      children: [
 
-          Container(
-            width: 37,
-            height: 37,
-            decoration: BoxDecoration(
-              color: R.theme.secondary,
-              shape: BoxShape.circle,
-            ),
-            padding: 8.all,
-            child: SvgPicture.asset(icon, width: size, height: size),
+        Container(
+          width: 37,
+          height: 37,
+          decoration: BoxDecoration(
+            color: R.theme.secondary,
+            shape: BoxShape.circle,
           ),
+          padding: 8.all,
+          child: SvgPicture.asset(icon, width: size, height: size),
+        ),
 
-          4.sbh,
+        4.sbh,
 
-          MyText(
-            text: label,
-            textAlign: TextAlign.center,
-            color: R.theme.white,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ],
-      ),
+        MyText(
+          text: label,
+          textAlign: TextAlign.center,
+          color: R.theme.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ],
     );
   }
 }
@@ -603,12 +609,13 @@ class PlanCard extends StatelessWidget {
                 Row(
                   children: [
                     _StatusBadge(
-                      text: active ? 'Active' : 'Expired',
+                      text: active ? 'Active' : 'Terminated',
                       color: active ? const Color(0xFFA0F695) : const Color(0xFFF3CECE),
                       textColor: active ? const Color(0xFF22A210) : const Color(0xFFFD0000),
                     ),
                     const Spacer(),
-                    _FuelUpButton(onTap: onFuelUp, active: active),
+                    if(onFuelUp != null)
+                      _FuelUpButton(onTap: onFuelUp, active: active),
                   ],
                 ),
 
@@ -772,4 +779,3 @@ class _FuelUpButton extends StatelessWidget {
     );
   }
 }
-

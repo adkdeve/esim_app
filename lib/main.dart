@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
 import 'package:get/get.dart';
+import 'app/data/services/auth_service.dart';
 import 'app/routes/app_pages.dart';
 import 'app/core/core.dart';
 import 'binding/app_binding.dart';
@@ -18,6 +19,17 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  // Initialize AuthService before runApp
+  final authService = AuthService();
+
+  // Retrieve stored data
+  final key = await authService.getPassword();
+
+  // Decide initial route
+  final String initialRoute = (key != null && key.isNotEmpty)
+      ? AppPages.MAIN
+      : AppPages.INITIAL;
 
   runApp(
     ScreenUtilInit(
@@ -44,7 +56,7 @@ void main() async {
             darkTheme: R.theme.dark,
 
             // End
-            initialRoute: AppPages.INITIAL,
+            initialRoute: initialRoute,
             getPages: AppPages.routes,
 
           );

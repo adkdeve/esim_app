@@ -1,16 +1,16 @@
 import 'dart:convert';
-
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:pcom_app/app/core/values/apis_url.dart';
-
+import '../../../../../common/widgets/login_required_view.dart';
 import '../../../../../common/widgets/my_text.dart';
 import '../../../../data/models/category_model.dart';
-import '../../../../data/models/esim_model.dart';
 import '../../../../data/models/sub_category_model.dart';
-import '../../card_details/bindings/card_details_binding.dart';
-import '../../card_details/views/card_details_view.dart';
+import '../../../../data/models/user_model.dart';
+import '../../../../data/services/auth_service.dart';
+import '../../../../routes/app_pages.dart';
+import '../../card_details/views/payment_webview.dart';
 
 class HomeController extends GetxController with GetSingleTickerProviderStateMixin {
   late TabController tabController;
@@ -18,12 +18,14 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   var regionalCategories = <CategoryModel>[].obs;
   var countryCategories = <SubCategoryModel>[].obs;
 
+  final AuthService _authService = AuthService();
+
   // Search Logic
   final TextEditingController searchController = TextEditingController();
   final FocusNode searchFocusNode = FocusNode();
-  final LayerLink layerLink = LayerLink(); // REQUIRED: Links the overlay to the search bar position
+  final LayerLink layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
-  var searchResults = <dynamic>[].obs; // Stores mixed Category/SubCategory models
+  var searchResults = <dynamic>[].obs;
 
   @override
   void onInit() {
@@ -185,15 +187,89 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
     );
   }
 
-  void navigateToDetails(dynamic model) {
-    Get.to(
-          () => const CardDetailsView(),
-      binding: CardDetailsBinding(),
-      arguments: {
-        'name': model.name,
-        'imageUrl': model.image,
-      },
-    );
+  Future<void> navigateToDetails(dynamic model) async {
+    // 1. CHECK AUTHENTICATION FIRST
+    UserModel? user = await _authService.getUserData();
+    String? password = await _authService.getPassword();
+
+    // If user or password is missing, they are treated as a Guest
+    if (user == null || password == null) {
+      // Stop the process and show Login Required Screen
+      Get.to(() => Scaffold(
+        body: LoginRequiredView(
+          bodyText: "Please login first to proceed with the purchase.",
+          onLoginPressed: () {
+            // Navigate to your Login Screen
+            // Verify 'Routes.SIGNIN' matches your app's route name
+            Get.offAllNamed(Routes.SIGNIN);
+          },
+        ),
+      ));
+      return; // Exit the function here
+    }
+
+    // 2. USER IS LOGGED IN - PROCEED WITH API CALL
+    try {
+      final Uri url = Uri.parse('https://wilixifysoft.com/wp-json/esim/v1/login-redirect');
+
+      // Prepare Body using the retrieved credentials
+      Map<String, dynamic> body = {
+        "email": user.userEmail, // Safe to use now
+        "password": password,    // Safe to use now
+        "region": model.name,
+        "plan": '10 GB 5 Days'
+      };
+
+      // --- Debugging Logs ---
+      print("==================================================");
+      print("🚀 API REQUEST: $url");
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+
+      if (response.statusCode == 200) {
+        try {
+          final data = jsonDecode(response.body);
+
+          if (data['success'] == true && data['redirect_url'] != null) {
+            String redirectUrl = data['redirect_url'];
+
+            // Proceed to Payment WebView
+            await _openPaymentWebView(redirectUrl);
+
+          } else {
+            Get.snackbar("Login Failed", data['msg'] ?? "Unknown error occurred");
+          }
+        } catch (jsonError) {
+          print("❌ JSON PARSING ERROR: $jsonError");
+          Get.snackbar("API Error", "Server returned invalid JSON");
+        }
+      } else {
+        Get.snackbar("Server Error", "Status Code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❌ EXCEPTION: $e");
+      Get.snackbar("Connection Error", "Check your internet connection");
+    }
+  }
+
+  Future<void> _openPaymentWebView(String urlString) async {
+    // 1. Navigate to WebView
+    final result = await Get.to(() => PaymentWebView(initialUrl: urlString));
+
+    // 2. NOW we can turn off the loader, because the user has come back
+    // (or the navigation is fully complete)
+
+    // 3. Handle Result
+    if (result == 'success') {
+      Get.offAllNamed('/home');
+      Get.snackbar("Success", "Payment completed successfully!",
+          backgroundColor: Colors.green, colorText: Colors.white);
+    }
   }
 
   void loadRegionalCategories() {

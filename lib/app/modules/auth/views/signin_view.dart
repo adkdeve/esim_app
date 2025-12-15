@@ -81,11 +81,11 @@ class SigninView extends GetView<SigninController> {
                           'email': controller.emailController.text,
                           'password': controller.passwordController.text,
                         };
+                        controller.authService.deleteSkip();
                         controller.authController.postApi(data, ApisUrl.login);
                       }
                     },
-                  ),
-                ),
+                  )),
 
                 24.sbh,
               ],

@@ -7,8 +7,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
   // Secure storage methods
   @override
-  Future<void> saveUserData(Map<String, dynamic> user, String token) =>
-      _authService.saveUserData(user, token);
+  Future<void> saveUserData(String password,Map<String, dynamic> user, String token) =>
+      _authService.saveUserData(password, user, token);
 
   @override
   Future<UserModel?> getUserData() => _authService.getUserData();

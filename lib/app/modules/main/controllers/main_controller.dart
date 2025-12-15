@@ -11,6 +11,7 @@ import 'package:pcom_app/app/modules/main/profile/controllers/profile_controller
 import '../../../../utils/helpers/easy_loading.dart';
 import '../../../../utils/helpers/snackbar.dart';
 import '../../../core/core.dart';
+import '../../../data/models/user_model.dart';
 import '../../../data/repositories/repository.dart';
 import '../../../data/services/auth_service.dart';
 import '../home/views/home_view.dart';
@@ -21,15 +22,18 @@ import '../profile/views/profile_view.dart';
 class MainController extends GetxController {
   RxInt selectedIndex = 0.obs;
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  var userFullName = ''.obs;
-  var userImage = ''.obs;
-  final index = 0.obs;
-
-  final _myRepo = Get.find<Repository>();
+  final myRepo = Get.find<Repository>();
   final logger = Get.find<Logger>();
   final storage = Get.find<FlutterSecureStorage>();
   final loading = Get.find<MyLoading>();
   var authService = Get.find<AuthService>();
+
+  final currentUser = Rxn<UserModel>();
+
+  UserModel? get user => currentUser.value;
+
+  final index = 0.obs;
+  var isGuest = false.obs;
 
   void openDrawer() {
     scaffoldKey.currentState?.openDrawer();
@@ -39,12 +43,25 @@ class MainController extends GetxController {
     scaffoldKey.currentState?.openEndDrawer();
   }
 
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    loadUserData();
+    checkAuthStatus();
+  }
+
+  Future<void> loadUserData() async {
+    // Reads from Secure Storage via AuthService
+    UserModel? loadedUser = await authService.getUserData();
+    currentUser.value = loadedUser; // Triggers UI updates
+  }
+
   Future<void> postApi(var data, String url) async {
     logger.v(url);
     logger.v(data);
     loading.showEasyLoading('Loading...');
     Get.focusScope?.unfocus();
-    _myRepo
+    myRepo
         .postApiWithHeader(data, url)
         .then((value) async {
       if (value != null) {
@@ -78,7 +95,7 @@ class MainController extends GetxController {
     });
   }
 
-  final List<Widget> screens = [
+  List<Widget> get screens => [
     GetBuilder<HomeController>(
       init: HomeController(),
       builder: (_) => HomeView(),
@@ -93,8 +110,20 @@ class MainController extends GetxController {
     ),
     GetBuilder<ProfileController>(
       init: ProfileController(),
-      builder: (_) => ProfileView(),
+      builder: (_) => ProfileEdit(),
     ),
   ];
+
+  Future<void> checkAuthStatus() async {
+    final String? key = await authService.getSkip();
+
+    print("Key: $key");
+
+    if (key != null && key.isNotEmpty) {
+      isGuest.value = true;
+    } else {
+      isGuest.value = false;
+    }
+  }
 
 }

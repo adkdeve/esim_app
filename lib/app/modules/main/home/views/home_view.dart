@@ -289,15 +289,7 @@ class HomeView extends GetView<HomeController> {
 
                   return GestureDetector(
                       onTap: () {
-                        Get.to(
-                              () => const CardDetailsView(),
-                          binding: CardDetailsBinding(),
-                          arguments: {
-                            'countryName': category.name,
-                            'imageUrl': category.image,
-                            'products': category,
-                          },
-                        );
+                        controller.navigateToDetails(category);
                       },
                       child: CircleItem(
                           name: category.name, imageUrl: category.image, imageSize: 45, textSize: 12

@@ -4,7 +4,7 @@ part of 'app_pages.dart';
 abstract class Routes {
   Routes._();
   static const ONBOARDING = _Paths.ONBOARDING;
-  static const FINALONBOARDING = _Paths.FINALONBOARDING;
+  static const FINALONBOARDING = _Paths.ONBOARDING + _Paths.FINALONBOARDING;
   static const AUTH = _Paths.AUTH;
   static const SIGNIN = _Paths.AUTH + _Paths.SIGNIN;
   static const SIGNUP = _Paths.AUTH + _Paths.SIGNUP;

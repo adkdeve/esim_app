@@ -1,22 +1,28 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcom_app/app/modules/main/controllers/main_controller.dart';
+import '../../../../../utils/helpers/snackbar.dart';
+import '../../../../core/core.dart';
+import '../../../../routes/app_pages.dart';
 
 class ProfileController extends GetxController {
   final name = TextEditingController();
   final email = TextEditingController();
-  final phone = TextEditingController();
-  final birth = TextEditingController();
   final birthdayController = TextEditingController();
 
-
-  late MainController mainController;
+  MainController mainController = Get.find<MainController>();
 
   @override
   void onInit() {
     super.onInit();
-    // 2. Initialize it here
-    mainController = Get.find<MainController>();
+    final user = mainController.user;
+
+    if (user != null) {
+      name.text = user.displayName ?? '';
+      email.text = user.userEmail ?? '';
+      birthdayController.text = user.dob ?? '';
+    }
   }
 
   // Contact Us
@@ -26,18 +32,7 @@ class ProfileController extends GetxController {
   final contactSubject = TextEditingController();
   final contactMessage = TextEditingController();
 
-
   DateTime? selectedDate;
-
-  final List<String> countries = [
-    '🇬🇧 +44',
-    '🇫🇷 +33',
-    '🇺🇸 +1',
-    '🇮🇳 +91',
-  ];
-
-  String selectedCountry = '🇬🇧 +44';
-
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -71,13 +66,26 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<void> logout() async {
+    mainController.loading.showEasyLoading('Logging out...');
+
+    try {
+      await mainController.authService.logout();
+
+      mainController.loading.easyLoadingSuccess();
+
+      Get.offAllNamed(Routes.ONBOARDING);
+    } catch (e) {
+      mainController.loading.dismissEasyLoading();
+      SnackBarUtils.errorMsg("Something went wrong!");
+    }
+  }
 
   @override
   void dispose() {
     name.dispose();
     email.dispose();
-    phone.dispose();
-    birth.dispose();
+    birthdayController.dispose();
     super.dispose();
   }
 }

@@ -40,7 +40,6 @@ class Repository {
     }
   }
 
-
   Future<dynamic> postProfile(data, url, token) async {
     try {
       dynamic response =

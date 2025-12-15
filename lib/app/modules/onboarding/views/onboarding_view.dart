@@ -77,7 +77,10 @@ class OnboardingView extends GetView<OnboardingController> {
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: TextButton(
-                    onPressed: () => Get.offAllNamed(Routes.MAIN),
+                    onPressed: () {
+                      controller.saveSkip();
+                      Get.offAllNamed(Routes.MAIN);
+                    },
                     child: MyText(
                       text: 'SKIP',
                       color: Colors.white,
@@ -147,9 +150,7 @@ class OnboardingView extends GetView<OnboardingController> {
                               },
                             ),
                             12.sbh,
-                            // To prevent layout shifting when 'Log in' disappears,
-                            // we can use a Visibility widget or maintain size.
-                            // Here logic remains same as your original code:
+
                             if (!isLastPage)
                               TextButton(
                                 onPressed: () =>
@@ -161,7 +162,6 @@ class OnboardingView extends GetView<OnboardingController> {
                                 ),
                               )
                             else
-                            // Placeholder to keep height consistent (Optional)
                               const SizedBox(height: 48),
                           ],
                         );

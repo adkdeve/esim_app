@@ -21,7 +21,7 @@ class NetworkApiService extends BaseApiServices {
             Uri.parse(url), body: data).timeout(
               const Duration(seconds: 15),
             );
-        if (response.statusCode == 200 || response.statusCode == 401) {
+        if (response.statusCode == 200 || response.statusCode == 401 || response.statusCode == 409 || response.statusCode == 201)  {
           // var data = Encryption.instance.decrypt(response.body.toString());
           // print(data);
           return response.body;

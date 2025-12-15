@@ -20,12 +20,6 @@ class SigninController extends GetxController {
   final passwordController = TextEditingController();
 
   late VoidCallback _listener;
-
-  /// --- Dependencies ---
-  final _repo = Get.find<Repository>();
-  final logger = Get.find<Logger>();
-  final storage = Get.find<FlutterSecureStorage>();
-  final loading = Get.find<MyLoading>();
   final authService = Get.find<AuthService>();
 
   AuthController authController = Get.find<AuthController>();
@@ -35,18 +29,12 @@ class SigninController extends GetxController {
   void onInit() {
     super.onInit();
 
-    /// listener to update button state
-    _listener = _updateLoginButtonState;
+    _listener = () {
+      _updateLoginButtonState();
+    };
 
     emailController.addListener(_listener);
     passwordController.addListener(_listener);
-  }
-
-  @override
-  void onClose() {
-    emailController.removeListener(_listener);
-    passwordController.removeListener(_listener);
-    super.onClose();
   }
 
   void _updateLoginButtonState() {
@@ -57,37 +45,11 @@ class SigninController extends GetxController {
     isLoginButtonEnabled.value = isValid;
   }
 
-  Future<void> login() async {
-    final data = {
-      "email": emailController.text.trim(),
-      "password": passwordController.text.trim(),
-    };
-
-    loading.showEasyLoading('Logging in...');
-    _repo.postApi(data, ApisUrl.login).then((value) async {
-      loading.dismissEasyLoading();
-
-      if (value == null) {
-        SnackBarUtils.errorMsg("Empty server response");
-        return;
-      }
-
-      try {
-        final response = json.decode(value);
-
-        if (response["success"] == true) {
-          await authService.saveUserData(response, '');
-          Get.offAllNamed(Routes.MAIN);
-        } else {
-          SnackBarUtils.errorMsg(response["message"]);
-        }
-      } catch (e) {
-        logger.e(e);
-        SnackBarUtils.showError("Invalid server response");
-      }
-    }).onError((error, _) {
-      loading.dismissEasyLoading();
-      SnackBarUtils.errorMsg(error.toString());
-    });
+  @override
+  void onClose() {
+    emailController.removeListener(_listener);
+    passwordController.removeListener(_listener);
+    super.onClose();
   }
+
 }

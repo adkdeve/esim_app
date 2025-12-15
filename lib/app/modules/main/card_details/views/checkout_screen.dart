@@ -5,24 +5,16 @@ import 'package:pcom_app/app/core/core.dart';
 import '../../../../../common/widgets/build_image.dart';
 import '../../../../../common/widgets/my_text.dart';
 import '../../../../../common/widgets/primary_button.dart';
-import '../../../../data/models/esim_model.dart';
+import '../controllers/checkout_screen_controller.dart'; // Import your new controller
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends GetView<CheckoutController> {
   const CheckoutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 1. RETRIEVE ARGUMENTS
-    final args = Get.arguments as Map<String, dynamic>;
-
-    final EsimProduct plan = args['plan']; // Contains plan.uid (The ID you wanted)
-    final int quantity = args['quantity'];
-    final String name = args['name'];
-    final String imageUrl = args['imageUrl'];
-
-    // 2. CALCULATE TOTAL LOCALLY
-    final double total = plan.retailPrice * quantity;
-    final String dataAmount = _formatData(plan.dataQuotaMb);
+    Get.put(CheckoutController());
+    // The Controller is already injected via GetX Binding or Get.put()
+    // We access data using 'controller.variableName'
 
     return Scaffold(
       appBar: AppBar(
@@ -35,6 +27,7 @@ class CheckoutScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          // Background
           Positioned.fill(
             child: SvgPicture.asset(
               "assets/images/background.svg",
@@ -54,14 +47,14 @@ class CheckoutScreen extends StatelessWidget {
                   // --- TOP CARD ---
                   Container(
                     width: double.infinity,
-                    height: 140, // Matched height to CardDetailsView
+                    height: 140,
                     decoration: BoxDecoration(
                       color: R.theme.white,
                       borderRadius: 20.radius,
                     ),
                     child: Stack(
                       children: [
-                        // 1. Background Pattern
+                        // Background Pattern
                         Positioned.fill(
                           child: ClipRRect(
                             borderRadius: 20.radius,
@@ -72,7 +65,7 @@ class CheckoutScreen extends StatelessWidget {
                           ),
                         ),
 
-                        // 2. Content
+                        // Content
                         Padding(
                           padding: 16.all,
                           child: Column(
@@ -84,7 +77,7 @@ class CheckoutScreen extends StatelessWidget {
                                   ClipRRect(
                                     borderRadius: 50.radius,
                                     child: buildImage(
-                                        imageUrl,
+                                        controller.imageUrl, // Access via Controller
                                         width: 30,
                                         height: 30,
                                         fit: BoxFit.cover,
@@ -96,12 +89,11 @@ class CheckoutScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       MyText(
-                                        text: name,
+                                        text: controller.countryName, // Access via Controller
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
-                                      // Matched style to "Standard eSIM" instead of ID for consistency
                                       MyText(text: 'Standard eSIM', fontSize: 10, color: Colors.grey),
                                     ],
                                   ),
@@ -110,14 +102,14 @@ class CheckoutScreen extends StatelessWidget {
                                 ],
                               ),
 
-                              // --- Price Section (Single Total) ---
+                              // --- Price Section ---
                               Padding(
                                 padding: const EdgeInsets.only(left: 40, top: 6),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: MyText(
                                     color: R.theme.black,
-                                    text: '\$${total.toStringAsFixed(2)}', // Showing specific total
+                                    text: '\$${controller.totalPrice.toStringAsFixed(2)}', // Access via Controller
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -135,10 +127,9 @@ class CheckoutScreen extends StatelessWidget {
                                   8.sbw,
                                   _buildBenefitItem(icon: 'assets/icons/ic_speed.svg', text: 'Up to 5G', context: context),
                                   8.sbw,
-                                  // Use the specific 'plan' object for validity
                                   _buildBenefitItem(
                                       iconObj: Icons.calendar_month_outlined,
-                                      text: '${plan.validityDays} days',
+                                      text: '${controller.plan.validityDays} days', // Access via Controller
                                       context: context
                                   ),
                                 ],
@@ -165,14 +156,17 @@ class CheckoutScreen extends StatelessWidget {
                         MyText(text: 'Price detail', fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                         16.sbh,
 
-                        _buildPriceRow(label: 'Plan ($dataAmount)', price: plan.retailPrice),
+                        _buildPriceRow(
+                            label: 'Plan (${controller.formattedDataUI})', // Access formatted getter
+                            price: controller.plan.retailPrice
+                        ),
                         8.sbh,
 
                         Row(
                           children: [
                             MyText(text: 'Quantity', fontSize: 12),
                             Spacer(),
-                            MyText(text: 'x $quantity', fontSize: 12),
+                            MyText(text: 'x ${controller.quantity}', fontSize: 12),
                           ],
                         ),
 
@@ -183,7 +177,12 @@ class CheckoutScreen extends StatelessWidget {
                           children: [
                             MyText(text: 'Total Amount', fontSize: 14, fontWeight: FontWeight.bold),
                             Spacer(),
-                            MyText(text: '\$${total.toStringAsFixed(2)}', fontSize: 14, fontWeight: FontWeight.bold, color: R.theme.primary)
+                            MyText(
+                                text: '\$${controller.totalPrice.toStringAsFixed(2)}',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: R.theme.primary
+                            )
                           ],
                         ),
                       ],
@@ -201,22 +200,15 @@ class CheckoutScreen extends StatelessWidget {
           height: 56,
           child: PrimaryButton(
               color: R.theme.primary,
-              text: 'Pay \$${total.toStringAsFixed(2)}',
-              onPressed: () {
-                // ACCESS THE ID HERE FOR API SUBMISSION
-                print("Submitting Order for Plan ID: ${plan.uid}");
-                print("Total: $total");
-              }),
+              text: 'Pay \$${controller.totalPrice.toStringAsFixed(2)}',
+              onPressed: () => controller.submitOrder() // Call Controller Action
+          ),
         ),
       ),
     );
   }
 
-  String _formatData(int mb) {
-    if (mb >= 1024) return "${(mb / 1024).toStringAsFixed(0)} GB";
-    return "$mb MB";
-  }
-
+  // Pure UI Helpers (Can stay in View)
   Widget _buildBenefitItem({String? icon, IconData? iconObj, required String text, required BuildContext context}) {
     return Row(
       children: [
